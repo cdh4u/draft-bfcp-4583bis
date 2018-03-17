@@ -257,80 +257,107 @@ bfcp-version           = token
   </section>
   
   <section title="SDP Offer/Answer Procedures" anchor="oa-offer-answer-proc">
-    <t>This section defines the SDP offer/answer <xref target="RFC3264"/> procedures for negotiating and establishing a BFCP connection. The generic procedures for DTLS are defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/>, the specific BFCP parts are specified here.</t>
-    <t>If the 'm' line 'proto' value is 'TCP/TLS/BFCP', 'TCP/DTLS/BFCP' or 'UDP/TLS/BFCP', each endpoint MUST provide a certificate fingerprint, using the SDP 'fingerprint' attribute <xref target="RFC8122"/>.</t>
-    <t>The authentication certificates are interpreted and validated as defined in <xref target="RFC8122"/>.  Self-signed certificates can be used securely, provided that the integrity of the SDP description is assured as defined in <xref target="RFC8122"/>.</t>
+    <t>
+      This section defines the SDP offer/answer <xref target="RFC3264"/> procedures for negotiating and establishing a BFCP stream. 
+      Generic procedures for DTLS are defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/>.bGeneric procedures for TLS are defined 
+      in <xref target="<xref target="RFC8122"/>. This section only defines the BFCP-specific parts.
+    </t>
+    <t>
+      This section only defines the BFCP-specific procedures. The procedures apply to an 'm' line describing a BFCP stream. If an offer or answer contains multiple 'm' lines describing 
+      BFCP streams, the procedures are applied independently to each stream.
+    </t>
+    <t>
+      If the 'm' line 'proto' value is 'TCP/TLS/BFCP', 'TCP/DTLS/BFCP' or 'UDP/TLS/BFCP', the offerer and answerer follow the generic procedures 
+      defined in <xref target="<xref target="RFC8122"/>.
+    </t>
+    <t>
+      If the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP', 'TCP/DTLS/TCP' or 'UDP/TLS/BFCP', the offerer and answerer 
+      use the SDP 'setup' attribute according to the procedures in <xref target="<xref target="RFC4145"/>.
+    </t>
+    <t>
+      If the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP' or 'TCP/DTLS/BFCP', the offerer and anwerer use 
+      the SDP 'connection' attribute according to the procedures in <xref target="<xref target="RFC4145"/>.
+    </t>
     <t><list style="empty">
-      <t>Note: The procedures apply to a specific 'm' line describing a BFCP connection.  If an offer or answer contains multiple 'm' lines describing BFCP connections, the procedures are applied separately to each 'm' line.</t>
-    </list></t>
-    <t><list style="empty">
-      <t>Informational note: The use of source-specific parameters in SDP, as defined in <xref target="RFC5576"/>, is not applicable to BFCP.</t>
+      <t>Note: The use of source-specific SDP parameters <xref target="RFC5576"/> is not defined to BFCP streams.</t>
     </list></t>
       
     <section title="Generating the Initial SDP Offer" anchor="oa-gen-initial-offer">
-      <t>When the offerer creates an initial offer, the offerer:</t>
+      <t>
+        When the offerer creates an initial offer, the offerer:
+      </t>
       <t><list style="symbols">
-          <t>MUST, if the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP', 'TCP/DTLS/TCP' or 'UDP/TLS/BFCP', associate an SDP setup attribute, with an 'actpass' value, with the 'm' line;</t>
-          <t>MUST, if the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP' or 'TCP/DTLS/BFCP', associate an SDP 'connection' attribute, with a 'new' value, with the 'm' line; and</t>
-      </list></t>
-      <t>In addition, if the offerer acts as the floor control server, the offerer:</t>
-      <t><list style="symbols">
-          <t>MUST associate an SDP 'floorctrl' attribute defined in <xref target="sdp-floorctrl-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'confid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute defined in <xref target="sec-floorid-association"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'label' attribute as described in <xref target="sec-floorid-association"/>, with the 'm' line; and</t>
-          <t>SHOULD, if it supports only the RFC 4583 subset and MUST, if it supports RFC XXXX associate an SDP 'bfcpver' attribute defined in <xref target="sec-bfcp-version"/>, with the 'm' line.</t>
+          <t>MUST associate an SDP 'floorctrl' attribute <xref target="sdp:floorctrl-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'confid' attribute <xref target="sec:confid-userid-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'userid' attribute <xref target="sec:confid-userid-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'floorid' attribute <xref target="sec:floorid-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'label' attribute <xref target="sec:floorid-attr"/>, with the 'm' line; and</t>
+          <t>MUST associate an SDP 'bfcpver' attribute <xref target="sec:bfcp-version-attr"/>, with the 'm' line.</t>
       </list></t>
     </section>
 
     <section title="Generating the SDP Answer" anchor="oa-gen-answer">
-      <t>When the answerer receives an offer, which contains an 'm' line describing a BFCP connection, if the answerer accepts the 'm' line it:</t>
+      <t>
+        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, if the answerer accepts the 'm' line it:</t>
       <t><list style="symbols">
-          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
-          <t>MUST, if the 'm' line proto value is 'TCP/BFCP', 'TCP/DTLS/BFCP', 'TCP/TLS/BFCP' or 'UDP/TLS/BFCP', associate an SDP setup attribute, with an 'active' or 'passive' value, with the 'm' line;</t>
+          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/></t>
+          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'confid' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'userid' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'floorid' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'label' attribute with the 'm' line; and</t>
+          <t>MUST, if the offer contained an SDP 'bfcpver' attribute, associate a 'bfcpver' attribute with the 'm' line.</t>
       </list></t>
-      <t>In addition, if the answerer acts as the floor control server, the answerer:</t>
+      <t><list style="empty">
+        <t>Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorcrl' and 'bfcpver' attributes in offers. In such case, the default values will be applies.</t>
+      </list></t>
+      <t>
+        Once the answerer has sent the answer, the answerer:
+      </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'floorctrl' attribute defined in <xref target="sdp-floorctrl-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'confid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute defined in <xref target="sec-floorid-association"/>, with the 'm' line; and</t>
-          <t>MUST associate an SDP 'label' attribute as described in <xref target="sec-floorid-association"/>, with the 'm' line.</t>
-          <t>SHOULD, if it supports only the RFC 4583 subset and MUST, if it supports RFC XXXX associate an SDP 'bfcpver' attribute defined in <xref target="sec-bfcp-version"/>, with the 'm' line.</t>
+          <t>MUST, if the answerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TCP connection; and</t>
+          <t>MUST, if the answerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
-      <t>Once the answerer has sent the answer, the answerer:</t>
-      <t><list style="symbols">
-          <t>MUST, if the answerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the answerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
-      </list></t>
-      <t>If the answerer does not accept the 'm' line in the offer, it MUST assign a zero port value to the corresponding 'm' line in the answer. In addition, the answerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.</t>
+      <t>
+        If the answerer does not accept the 'm' line in the offer, it MUST assign a zero port value to the corresponding 'm' line in the answer. 
+        In addition, the answerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.
+      </t>
     </section>
 
     <section title="Offerer Processing of the SDP Answer" anchor="oa-offerer-processing-answer">
-      <t>When the offerer receives an answer, which contains an 'm' line with a non-zero port value, describing a BFCP connection, the offerer:</t>
+      <t>
+        When the offerer receives an answer, which contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
+      </t>
       <t><list style="symbols">
-          <t>MUST, if the offer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the offerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
+          <t>MUST, if the offer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TCP connection; and</t>
+          <t>MUST, if the offerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
-      <t>If the 'm' line in the answer contains a zero port value, the offerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.</t>
+      <t><list style="empty">
+        <t>Note: An answerer compliant with <xref target="RFC4583"/> might not include 'floorcrl' and 'bfcpver' attributes in answers. In such case, the default values will be applies.</t>
+      </list></t>
+      <t>
+        If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer, the offerer MUST NOT establish a 
+        TCP connection or a TLS/DTLS connection associated with the 'm' line.
+      </t>
     </section>
 
     <section title="Modifying the Session" anchor="oa-mod-session">
-      <t>When an offerer sends an updated offer, in order to modify a previously established BFCP connection, it follows the procedures in <xref target="oa-gen-initial-offer"/>, with the following exceptions:</t>
+      <t>
+        When an offerer sends an updated offer, in order to modify a previously established BFCP stream, it follows the procedures 
+        in <xref target="oa-gen-initial-offer"/>, with the following exceptions:
+      </t>
       <t><list style="symbols">
-          <t>If the BFCP connection is carried on top of TCP, and the offerer does not want to re-establish an existing TCP connection, the offerer MUST associate an SDP connection attribute with an 'existing' value, with the 'm' line; and</t>
-          <t>If the offerer wants to disable a previously established BFCP connection, it MUST assign a zero port value to the 'm' line associated with the BFCP connection, following the procedures in <xref target="RFC3264"/>.</t>
+          <t>If the BFCP stream is carried on top of TCP, and if the offerer does not want to re-establish an existing TCP connection, the offerer MUST associate 
+             an SDP connection attribute with an 'existing' value, with the 'm' line; and</t>
+          <t>If the offerer wants to disable a previously established BFCP stream, it MUST assign a zero port value to the 'm' line associated with the 
+             BFCP connection, following the procedures in <xref target="RFC3264"/>.</t>
       </list></t>
     </section>
 
-    <!-- redundant with draft-ietf-mmusic-dtls-sdp
-    <section title="DTLS Role Determination" anchor="oa-dtls-role">
-      <t>If the 'm' line proto value is 'UDP/TLS/BFCP', the 'active/passive' status is used to determine the TLS roles. Following the procedures in <xref target="RFC8122"/>, the 'active' endpoint will take the TLS client role.</t>
-      <t>Once a DTLS connection has been established, if the 'active/passive' status of the endpoints change during a session, a new DTLS connection MUST be established.  Therefore, endpoints SHOULD NOT change the 'active/passive' status in subsequent offers and answers, unless they want to establish a new DTLS connection.</t>
-      <t>The conditions above, and additional conditions under which endpoints MUST establish a new DTLS connection, are the same as defined for DTLS-SRTP in <xref target="I-D.ietf-mmusic-dtls-sdp"/>.</t>
-    </section>
-    -->
   </section>
  
  <section title="Examples" anchor="sec-example">
