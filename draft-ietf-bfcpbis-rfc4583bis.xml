@@ -222,7 +222,7 @@ bfcp-version           = token
       the following Section.
     </t>
     <t><list style="empty">
-      <t>Note: When using ICE, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
+      <t>Note: When using Interactive Connectivity Establishment (ICE) <xref target="I-D.ietf-ice-rfc5245bis"/>, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
       TCP/TLS/BFCP follows the same procedures as TCP/BFCP and is described below.</t>
     </list></t>
     <section title="TCP Connection Management" anchor="sec-tcp-connection">
@@ -285,10 +285,10 @@ bfcp-version           = token
 
   <section title="ICE Considerations" anchor="sec:ice-considerations">
     <t>
-      Generic SDP offer/answer procedures for ICE are defined in [ref-to-ICE-SIP-SDP].
+      Generic SDP offer/answer procedures for Interactive Connectivity Establishment (ICE) are defined in <xref target="I-D.ietf-mmusic-ice-sip-sdp"/>.
     </t>
     <t>
-      When BFCP is used with UDP based ICE candidates [ref-to-ICEbis] then the procedures for UDP/TLS/BFCP are used.
+      When BFCP is used with UDP based ICE candidates <xref target="I-D.ietf-ice-rfc5245bis"/> then the procedures for UDP/TLS/BFCP are used.
     </t>
     <t>
       When BFCP is used with TCP based ICE candidates <xref target="RFC6544"/> then the procedures for TCP/DTLS/BFCP are used.
@@ -619,11 +619,12 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.4566" ?>
     <?rfc include="reference.RFC.6347" ?>
     <?rfc include="reference.RFC.4571" ?>
-    <?rfc include="reference.RFC.5245" ?>
     <?rfc include="reference.RFC.6544" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-dtls-sdp-32" ?>
     <?rfc include="reference.RFC.4582" ?>
     <?rfc include="reference.RFC.4583" ?>
+    <?rfc include="reference.I-D.draft-ietf-ice-rfc5245bis-18"?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-16"?>
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
