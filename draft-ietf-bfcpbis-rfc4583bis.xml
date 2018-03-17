@@ -135,7 +135,7 @@ role                     = "c-only" / "s-only" / "c-s"
       <t><list style="hanging">
           <t hangText="c-only:">The endpoint is willing to act as floor control client.</t>
           <t hangText="s-only:">The endpoint is willing to act as floor control server only.</t>
-          <t hangText="c-s:">The endpoint is willing to act as floor control client or floor control server.</t>
+          <t hangText="c-s:">The endpoint is willing to act as floor control client and floor control server.</t>
       </list></t>
       <t>
         An offerer can indicate multiple attribute value for a given session. An answerer can only indicate one attribute value. The offerer indicates which floor 
@@ -157,7 +157,7 @@ role                     = "c-only" / "s-only" / "c-s"
       </t>
       <t>
         Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. For a given stream, 
-        if the 'bfcpver' attribute is not present the offerer will act as floor control client and the answerer will act as floor control server.
+        if the 'floorctrl' attribute is not present the offerer will act as floor control client and the answerer will act as floor control server.
       </t>
       <t>
         The SDP Offer/Answer procedures for the 'floorctrl' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
