@@ -309,7 +309,8 @@ bfcp-version           = token
           <t>MUST, if the offer contained an SDP 'bfcpver' attribute, associate a 'bfcpver' attribute with the 'm' line.</t>
       </list></t>
       <t><list style="empty">
-        <t>Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in offers. In such case, the default values will be applies.</t>
+        <t>Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in offers, in which cases
+        the default values apply.</t>
       </list></t>
       <t>
         Once the answerer has sent the answer, the answerer:
@@ -337,7 +338,8 @@ bfcp-version           = token
              initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
       <t><list style="empty">
-        <t>Note: An answerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in answers. In such case, the default values will be applies.</t>
+        <t>Note: An answerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in answers, in which cases
+        the default values apply.</t>
       </list></t>
       <t>
         If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer, the offerer MUST NOT establish a 
