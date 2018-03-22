@@ -17,6 +17,20 @@
 <front>
   <title abbrev="BFCP">Session Description Protocol (SDP) Format for Binary Floor Control Protocol (BFCP) Streams</title>
 
+  
+  <author initials="C.H." surname="Holmberg" fullname="Christer Holmberg">
+    <organization>Ericsson</organization>
+    <address>
+       <postal>
+         <street>Hirsalantie 11</street>
+          <code>02420</code>
+          <city>Jorvas</city>
+          <country>Finland</country>
+       </postal>
+       <email>christer.holmberg@ericsson.com</email>
+     </address>
+  </author>
+  
   <author initials="G." surname="Camarillo" fullname="Gonzalo Camarillo">
     <organization>Ericsson</organization>
     <address>
@@ -41,19 +55,7 @@
     </address>
   </author>
 
-  <author fullname="Paul E. Jones" initials="P.E." surname="Jones">
-    <organization>Cisco</organization>
-    <address>
-      <postal>
-        <street>7025 Kit Creek Rd.</street>
-        <city>Research Triangle Park, NC 27709</city>
-        <country>USA</country>
-      </postal>
-      <email>paulej@packetizer.com</email>
-    </address>
-  </author>
-
-  <date/>
+  <date year="2018"/>
 
   <area>Real-time Applications and Infrastructure</area>
   <workgroup>BFCPbis Working Group</workgroup>
