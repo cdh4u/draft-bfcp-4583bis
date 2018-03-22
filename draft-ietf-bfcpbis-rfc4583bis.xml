@@ -17,6 +17,20 @@
 <front>
   <title abbrev="BFCP">Session Description Protocol (SDP) Format for Binary Floor Control Protocol (BFCP) Streams</title>
 
+  
+  <author initials="C.H." surname="Holmberg" fullname="Christer Holmberg">
+    <organization>Ericsson</organization>
+    <address>
+       <postal>
+         <street>Hirsalantie 11</street>
+          <code>02420</code>
+          <city>Jorvas</city>
+          <country>Finland</country>
+       </postal>
+       <email>christer.holmberg@ericsson.com</email>
+     </address>
+  </author>
+  
   <author initials="G." surname="Camarillo" fullname="Gonzalo Camarillo">
     <organization>Ericsson</organization>
     <address>
@@ -41,19 +55,7 @@
     </address>
   </author>
 
-  <author fullname="Paul E. Jones" initials="P.E." surname="Jones">
-    <organization>Cisco</organization>
-    <address>
-      <postal>
-        <street>7025 Kit Creek Rd.</street>
-        <city>Research Triangle Park, NC 27709</city>
-        <country>USA</country>
-      </postal>
-      <email>paulej@packetizer.com</email>
-    </address>
-  </author>
-
-  <date/>
+  <date year="2018"/>
 
   <area>Real-time Applications and Infrastructure</area>
   <workgroup>BFCPbis Working Group</workgroup>
@@ -279,121 +281,208 @@ bfcp-version           = token
   </section>
 
   <section title="BFCP Connection Management" anchor="sec-bfcp-connection">
-    <t>BFCP connections can use TCP or UDP as the underlying transport. BFCP entities exchanging BFCP messages over UDP direct the BFCP messages to the peer side connection address and port provided in the SDP 'm' line. TCP connection management is more complicated and is described in the following Section.</t>
+    <t>
+      BFCP streams can use TCP or UDP as the underlying transport. Endpoints exchanging BFCP messages over UDP send the BFCP messages towards the peer 
+      using the connection address and port provided in the SDP 'c' and 'm' lines. TCP connection management is more complicated and is described in 
+      the following Section.
+    </t>
     <t><list style="empty">
-      <t>Note: When using ICE, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. TCP/TLS/BFCP follows the same procedures as TCP/BFCP and is described below.</t>
+      <t>Note: When using Interactive Connectivity Establishment (ICE) <xref target="I-D.ietf-ice-rfc5245bis"/>, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
+      TCP/TLS/BFCP follows the same procedures as TCP/BFCP and is described below.</t>
     </list></t>
     <section title="TCP Connection Management" anchor="sec-tcp-connection">
-      <t>The management of the TCP connection used to transport BFCP is performed using the 'setup' and 'connection' attributes, as defined in <xref target="RFC4145"/>.</t>
-      <t>The 'setup' attribute indicates which of the endpoints (client or floor control server) initiates the TCP connection. The 'connection' attribute handles TCP connection re-establishment.</t>
-      <t>The BFCP specification <xref target="I-D.ietf-bfcpbis-rfc4582bis"/> describes a number of situations when the TCP connection between a client and the floor control server needs to be re-established. However, that specification does not describe the re-establishment process because this process depends on how the connection was established in the first place. BFCP entities using the offer/answer model follow the following rules.</t>
-      <t>When the existing TCP connection is closed and re-established following the rules in <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, the client MUST generate an offer towards the floor control server in order to re-establish the connection. If a TCP connection cannot deliver a BFCP message and times out, the entity that attempted to send the message (i.e., the one that detected the TCP timeout) MUST generate an offer in order to re-establish the TCP connection.</t>
-      <t>Endpoints that use the offer/answer model to establish TCP connections MUST support the 'setup' and 'connection' attributes.</t>
+      <t>
+        The management of the TCP connection used to transport BFCP messages is performed using the SDP 'setup' and 'connection' attributes <xref target="RFC4145"/>.
+        The 'setup' attribute indicates which of the endpoints initiates the TCP connection. The 'connection' attribute handles TCP connection re-establishment.
+      </t>
+      <t>
+        The BFCP specification <xref target="I-D.ietf-bfcpbis-rfc4582bis"/> describes a number of situations when the TCP connection between a floor control client 
+        and the floor control server needs to be re-established. However, that specification does not describe the re-establishment process because this process 
+        depends on how the connection was established in the first place. Endpoints using the offer/answer mechanism follow the following rules.
+      </t>
+      <t>
+        When the existing TCP connection is closed and re-established following the rules in <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, the floor control client 
+        MUST send an offer towards the floor control server in order to re-establish the connection. If a TCP connection cannot deliver a BFCP message and times out, 
+        the endpoint that attempted to send the message (i.e., the one that detected the TCP timeout) MUST send an offer in order to re-establish the TCP connection.
+      </t>
+      <t>
+        Endpoints that use the offer/answer mechanism to negotiate TCP connections MUST support the 'setup' and 'connection' attributes.
+      </t>
     </section>
   </section>
 
   <section title="Authentication" anchor="sec-authentication">
-    <t>When a BFCP connection is established using the offer/answer model, it is assumed that the offerer and the answerer authenticate each other using some mechanism. TLS/DTLS is the preferred mechanism, but other mechanisms are possible and outside the scope of this document.  Once this mutual authentication takes place, all the offerer and the answerer need to ensure is that the entity they are receiving BFCP messages from is the same as the one that generated the previous offer or answer.</t>
-    <t>When SDP is used to perform an offer/answer exchange, the initial mutual authentication SHOULD take place at the signaling level. Additionally, signaling can use S/MIME <xref target="RFC5750"/> to provide an integrity-protected channel with optional confidentiality for the offer/answer exchange. BFCP takes advantage of this integrity-protected offer/answer exchange to perform authentication. Within the offer/answer exchange, the offerer and answerer exchange the fingerprints of their self-signed certificates. These self-signed certificates are then used to establish the TLS/DTLS connection that will carry BFCP traffic between the offerer and the answerer.</t>
-    <t>BFCP clients and floor control servers follow the rules in <xref target="RFC8122"/> regarding certificate choice and presentation. Endpoints that use the offer/answer model to establish BFCP connections MUST support the 'fingerprint' attribute and MUST include it in their session descriptions.</t>
-    <t>When TLS is used with TCP, once the underlying connection is established, the answerer, which may be the client or the floor control server, acts as the TLS server regardless of its role (passive or active) in the TCP establishment procedure.  If the TCP connection is lost, the active endpoint is responsible for re-establishing the TCP connection. Unless a new TLS session is negotiated, subsequent SDP offers and answers will not impact the previously negotiated TLS roles.</t>
-    <t>When DTLS is used with UDP, the requirements specified in Section 5 of <xref target="I-D.ietf-mmusic-dtls-sdp"/> MUST be followed.</t>
+    <t>
+      When a BFCP stream is negotiated using the SDP offer/answer mechanism, it is assumed that the offerer and the answerer authenticate each other using 
+      some mechanism. TLS/DTLS is the preferred mechanism. Other mechanisms are possible, but are outside the scope of this document. Once this mutual 
+      authentication takes place, all the offerer and the answerer need to ensure is that the entity they are receiving BFCP messages from is the same as 
+      the one that generated the previous offer or answer. 
+    </t>  
+    <t>
+      The initial mutual authentication SHOULD take place at the signaling level. Additionally, signaling can use S/MIME <xref target="RFC5750"/> to provide 
+      an integrity-protected channel with optional confidentiality for the offer/answer exchange. BFCP takes advantage of this integrity-protected offer/answer 
+      exchange to perform authentication. Within the offer/answer exchange, the offerer and answerer exchange the fingerprints of their self-signed certificates. 
+      These self-signed certificates are then used to establish the TLS/DTLS connection that will carry BFCP traffic between the offerer and the answerer.
+    </t>
+    <t>
+      Endpoints follow the rules in <xref target="RFC8122"/> regarding certificate choice and presentation. Endpoints that use the offer/answer model to 
+      establish BFCP streams MUST support the 'fingerprint' attribute and MUST include it in their offers and answers.
+    </t>
+    <t>
+       When TLS is used with TCP, once the underlying connection is established, the answerer, which can be the floor control client or the floor control server, 
+       acts as the TLS server regardless of its role (passive or active) in the TCP establishment procedure. If the TCP connection is lost, the active endpoint 
+       is responsible for re-establishing the TCP connection. Unless a new TLS session is negotiated, subsequent SDP offers and answers will not impact the 
+       previously negotiated TLS roles.
+    </t>
+    <t>
+       When DTLS is used with UDP, the requirements specified in Section 5 of <xref target="I-D.ietf-mmusic-dtls-sdp"/> MUST be followed.
+    </t>
     <t><list style="empty">
-        <t>Informational note: How to determine which endpoint initiates the TLS/DTLS association depends on the selected underlying transport. It was decided to keep the original semantics in <xref target="RFC4583"/> for TCP to retain backwards compatibility. When using UDP, the procedure defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/> was selected in order to be compatible with other DTLS based protocol implementations, such as DTLS-SRTP. Furthermore, the procedure defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/> does not overload offer/answer semantics and works for offerless INVITE in scenarios with B2BUAs.</t>
+        <t>
+          Informational note: How to determine which endpoint initiates the TLS/DTLS association depends on the selected underlying transport. 
+          It was decided to keep the original semantics in <xref target="RFC4583"/> for TCP to retain backwards compatibility. When using UDP, 
+          the procedure defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/> was selected in order to be compatible with other DTLS based protocol 
+          implementations, such as DTLS-SRTP. Furthermore, the procedure defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/> do not overload 
+          offer/answer semantics and works for offerless INVITE in scenarios with B2BUAs.
+        </t>
     </list></t>
   </section>
 
   <section title="ICE Considerations" anchor="sec:ice-considerations">
-    <t>When BFCP is used with UDP based ICE candidates <xref target="RFC5245"/> then the procedures for UDP/TLS/BFCP are used.</t>
-    <t>When BFCP is used with TCP based ICE candidates <xref target="RFC6544"/> then the procedures for TCP/DTLS/BFCP are used.</t>
-    <t>In ICE environments, during the nomination process, endpoints go through multiple ICE candidate pairs, until the most preferred candidate pair is found. During the nomination process, data can be sent as soon as the first working candidate pair is found, but the nomination process still continues and selected candidate pairs can still change while data is sent. Furthermore, if endpoints roam between networks, for instance when mobile endpoint switches from mobile connection to WiFi, endpoints will initiate an ICE restart, which will trigger a new nomination process between the new set of candidates and likely result in the new nominated candidate pair.</t>
-    <t>Implementations MUST treat all ICE candidate pairs associated with an BFCP association on top of a DTLS association as part of the same DTLS association. Thus, there will only be one BFCP handshake and one DTLS handshake even if there are multiple valid candidate pairs, and shifting from one candidate pair to another, including switching between UDP to TCP candidate pairs, will not impact the BFCP or DTLS associations. If new candidates are added, they will also be part of the same BFCP and DTLS associations. When transitioning between candidate pairs, different candidate pairs can be currently active in different directions and implementations MUST be ready to receive data on any of the candidates, even if this means sending and receiving data using UDP/TLS/BFCP and TCP/DTLS/BFCP at the same time in different directions.</t>
-    <t>In order to maximize the likelihood of interoperability between the endpoints, all ICE enabled BFCP-over-DTLS endpoints SHOULD implement support for UDP/TLS/BFCP.</t>
-    <t>When an SDP offer or answer is sent with multiple ICE candidates during initial connection negotiation or after ICE restart, UDP based candidates SHOULD be included and default candidate SHOULD be chosen from one of those UDP candidates. The proto value MUST match the transport protocol associated with the default candidate. If UDP transport is used for the default candidate, then 'UDP/TLS/BFCP' proto value MUST be used. If TCP transport is used for the default candidate, then 'TCP/DTLS/BFCP' proto value MUST be used. Note that under normal circumstances the proto value for offers and answers sent during ICE nomination SHOULD be 'UDP/TLS/BFCP'.</t>
-    <t>When a subsequent SDP offer or answer is sent after ICE nomination is complete, and does not initiate ICE restart, it will contain only the currently nominated ICE candidate pair. In this case, the proto value MUST match the transport protocol associated with the nominated ICE candidate pair. If UDP transport is used for the nominated pair, then 'UDP/TLS/BFCP' proto value MUST be used. If TCP transport is used for the nominated pair, then 'TCP/DTLS/BFCP' proto value MUST be used. Please note that if an endpoint switches between TCP-based and UDP-based candidates during the nomination process the endpoint is not required to send an SDP offer for the sole purpose of keeping the proto value of the associated 'm' line in sync.</t>
+    <t>
+      Generic SDP offer/answer procedures for Interactive Connectivity Establishment (ICE) are defined in <xref target="I-D.ietf-mmusic-ice-sip-sdp"/>.
+    </t>
+    <t>
+      When BFCP is used with UDP based ICE candidates <xref target="I-D.ietf-ice-rfc5245bis"/> then the procedures for UDP/TLS/BFCP are used.
+    </t>
+    <t>
+      When BFCP is used with TCP based ICE candidates <xref target="RFC6544"/> then the procedures for TCP/DTLS/BFCP are used.
+    </t>    
+    <t>
+      Based on the procedures defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/>, endpoints treat all ICE candidate pairs associated with a BFCP stream on top of a DTLS association 
+      as part of the same DTLS association. Thus, there will only be one BFCP handshake and one DTLS handshake even if there are multiple valid candidate pairs, 
+      and if BFCF media is shifted between candidate pairs (including switching between UDP to TCP candidate pairs) prior to nomination. If new candidates are added, 
+      they will also be part of the same DTLS association.
+    </t>
+    <t>
+      In order to maximize the likelihood of interoperability between the endpoints, all ICE enabled BFCP-over-DTLS endpoints SHOULD 
+      implement support for UDP/TLS/BFCP.
+    </t>
+    <t>
+      When an SDP offer or answer conveys multiple ICE candidates for a BFCP stream, UDP based candidates SHOULD be included and 
+      the default candidate SHOULD be chosen from one of those UDP candidates. If UDP transport is used for the default candidate, 
+      then the 'm' line proto value MUST be 'UDP/TLS/BFCP'. If TCP transport is used for the default candidate, the 'm' line proto 
+      value MUST be 'TCP/DTLS/BFCP'.
+     </t>     
     <t><list style="empty">
-      <t>Note: The text in the paragraph above only applies when the usage of ICE has been negotiated. If ICE is not used, the proto value MUST always reflect the transport protocol used at any given time.</t>
-    </list></t>
-    <t><list style="empty">
-      <t>Note: Using ICE with protocols other than UDP/TLS/BFCP and TCP/DTLS/BFCP is outside of scope for this specification.</t>
+      <t>Note: Usage of ICE with protocols other than UDP/TLS/BFCP and TCP/DTLS/BFCP is outside of scope for this specification.</t>
     </list></t>
   </section>
   
-  <section title="SDP Offer/Answer Procedures" anchor="sec:oa-offer-answer-proc">
-    <t>This section defines the SDP offer/answer <xref target="RFC3264"/> procedures for negotiating and establishing a BFCP connection. The generic procedures for DTLS are defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/>, the specific BFCP parts are specified here.</t>
-    <t>If the 'm' line 'proto' value is 'TCP/TLS/BFCP', 'TCP/DTLS/BFCP' or 'UDP/TLS/BFCP', each endpoint MUST provide a certificate fingerprint, using the SDP 'fingerprint' attribute <xref target="RFC8122"/>.</t>
-    <t>The authentication certificates are interpreted and validated as defined in <xref target="RFC8122"/>.  Self-signed certificates can be used securely, provided that the integrity of the SDP description is assured as defined in <xref target="RFC8122"/>.</t>
+  <section title="SDP Offer/Answer Procedures" anchor="oa-offer-answer-proc">
+    <t>
+      This section defines the SDP offer/answer <xref target="RFC3264"/> procedures for negotiating and establishing a BFCP stream. 
+      Generic procedures for DTLS are defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/>.bGeneric procedures for TLS are defined 
+      in <xref target="<xref target="RFC8122"/>.
+    </t>
+    <t>
+      This section only defines the BFCP-specific procedures. The procedures apply to an 'm' line describing a BFCP stream. If an offer or answer contains multiple 'm' lines describing 
+      BFCP streams, the procedures are applied independently to each stream.
+    </t>
+    <t>
+      If the 'm' line 'proto' value is 'TCP/TLS/BFCP', 'TCP/DTLS/BFCP' or 'UDP/TLS/BFCP', the offerer and answerer follow the generic procedures 
+      defined in <xref target="<xref target="RFC8122"/>.
+    </t>
+    <t>
+      If the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP', 'TCP/DTLS/TCP' or 'UDP/TLS/BFCP', the offerer and answerer 
+      use the SDP 'setup' attribute according to the procedures in <xref target="<xref target="RFC4145"/>.
+    </t>
+    <t>
+      If the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP' or 'TCP/DTLS/BFCP', the offerer and anwerer use 
+      the SDP 'connection' attribute according to the procedures in <xref target="<xref target="RFC4145"/>.
+    </t>
     <t><list style="empty">
-      <t>Note: The procedures apply to a specific 'm' line describing a BFCP connection.  If an offer or answer contains multiple 'm' lines describing BFCP connections, the procedures are applied separately to each 'm' line.</t>
-    </list></t>
-    <t><list style="empty">
-      <t>Informational note: The use of source-specific parameters in SDP, as defined in <xref target="RFC5576"/>, is not applicable to BFCP.</t>
+      <t>Note: The use of source-specific SDP parameters <xref target="RFC5576"/> is not defined to BFCP streams.</t>
     </list></t>
       
     <section title="Generating the Initial SDP Offer" anchor="oa-gen-initial-offer">
-      <t>When the offerer creates an initial offer, the offerer:</t>
+      <t>
+        When the offerer creates an initial offer, the offerer:
+      </t>
       <t><list style="symbols">
-          <t>MUST, if the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP', 'TCP/DTLS/TCP' or 'UDP/TLS/BFCP', associate an SDP setup attribute, with an 'actpass' value, with the 'm' line;</t>
-          <t>MUST, if the 'm' line proto value is 'TCP/BFCP', 'TCP/TLS/BFCP' or 'TCP/DTLS/BFCP', associate an SDP 'connection' attribute, with a 'new' value, with the 'm' line; and</t>
-      </list></t>
-      <t>In addition, if the offerer acts as the floor control server, the offerer:</t>
-      <t><list style="symbols">
-          <t>MUST associate an SDP 'floorctrl' attribute defined in <xref target="sdp-floorctrl-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'confid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute defined in <xref target="sec-floorid-association"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'label' attribute as described in <xref target="sec-floorid-association"/>, with the 'm' line; and</t>
-          <t>SHOULD, if it supports only the RFC 4583 subset and MUST, if it supports RFC XXXX associate an SDP 'bfcpver' attribute defined in <xref target="sec-bfcp-version"/>, with the 'm' line.</t>
+          <t>MUST associate an SDP 'floorctrl' attribute <xref target="sdp:floorctrl-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'confid' attribute <xref target="sec:confid-userid-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'userid' attribute <xref target="sec:confid-userid-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'floorid' attribute <xref target="sec:floorid-attr"/>, with the 'm' line;</t>
+          <t>MUST associate an SDP 'label' attribute <xref target="sec:floorid-attr"/>, with the 'm' line; and</t>
+          <t>MUST associate an SDP 'bfcpver' attribute <xref target="sec:bfcp-version-attr"/>, with the 'm' line.</t>
       </list></t>
     </section>
 
     <section title="Generating the SDP Answer" anchor="oa-gen-answer">
-      <t>When the answerer receives an offer, which contains an 'm' line describing a BFCP connection, if the answerer accepts the 'm' line it:</t>
+      <t>
+        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, if the answerer accepts the 'm' line it:</t>
       <t><list style="symbols">
-          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
-          <t>MUST, if the 'm' line proto value is 'TCP/BFCP', 'TCP/DTLS/BFCP', 'TCP/TLS/BFCP' or 'UDP/TLS/BFCP', associate an SDP setup attribute, with an 'active' or 'passive' value, with the 'm' line;</t>
+          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/></t>
+          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'confid' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'userid' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'floorid' attribute with the 'm' line;</t>
+          <t>MUST associate an SDP 'label' attribute with the 'm' line; and</t>
+          <t>MUST, if the offer contained an SDP 'bfcpver' attribute, associate a 'bfcpver' attribute with the 'm' line.</t>
       </list></t>
-      <t>In addition, if the answerer acts as the floor control server, the answerer:</t>
+      <t><list style="empty">
+        <t>Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in offers, in which cases
+        the default values apply.</t>
+      </list></t>
+      <t>
+        Once the answerer has sent the answer, the answerer:
+      </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'floorctrl' attribute defined in <xref target="sdp-floorctrl-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'confid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute defined in <xref target="sec-confid-userid-attr"/>, with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute defined in <xref target="sec-floorid-association"/>, with the 'm' line; and</t>
-          <t>MUST associate an SDP 'label' attribute as described in <xref target="sec-floorid-association"/>, with the 'm' line.</t>
-          <t>SHOULD, if it supports only the RFC 4583 subset and MUST, if it supports RFC XXXX associate an SDP 'bfcpver' attribute defined in <xref target="sec-bfcp-version"/>, with the 'm' line.</t>
+          <t>MUST, if the answerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TCP connection; and</t>
+          <t>MUST, if the answerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
-      <t>Once the answerer has sent the answer, the answerer:</t>
-      <t><list style="symbols">
-          <t>MUST, if the answerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the answerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
-      </list></t>
-      <t>If the answerer does not accept the 'm' line in the offer, it MUST assign a zero port value to the corresponding 'm' line in the answer. In addition, the answerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.</t>
+      <t>
+        If the answerer does not accept the 'm' line in the offer, it MUST assign a zero port value to the corresponding 'm' line in the answer. 
+        In addition, the answerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.
+      </t>
     </section>
 
     <section title="Offerer Processing of the SDP Answer" anchor="oa-offerer-processing-answer">
-      <t>When the offerer receives an answer, which contains an 'm' line with a non-zero port value, describing a BFCP connection, the offerer:</t>
+      <t>
+        When the offerer receives an answer, which contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
+      </t>
       <t><list style="symbols">
-          <t>MUST, if the offer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the offerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
+          <t>MUST, if the offer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TCP connection; and</t>
+          <t>MUST, if the offerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+             initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
-      <t>If the 'm' line in the answer contains a zero port value, the offerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.</t>
+      <t><list style="empty">
+        <t>Note: An answerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in answers, in which cases
+        the default values apply.</t>
+      </list></t>
+      <t>
+        If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer, the offerer MUST NOT establish a 
+        TCP connection or a TLS/DTLS connection associated with the 'm' line.
+      </t>
     </section>
 
     <section title="Modifying the Session" anchor="oa-mod-session">
-      <t>When an offerer sends an updated offer, in order to modify a previously established BFCP connection, it follows the procedures in <xref target="oa-gen-initial-offer"/>, with the following exceptions:</t>
+      <t>
+        When an offerer sends an updated offer, in order to modify a previously established BFCP stream, it follows the procedures 
+        in <xref target="oa-gen-initial-offer"/>, with the following exceptions:
+      </t>
       <t><list style="symbols">
-          <t>If the BFCP connection is carried on top of TCP, and the offerer does not want to re-establish an existing TCP connection, the offerer MUST associate an SDP connection attribute with an 'existing' value, with the 'm' line; and</t>
-          <t>If the offerer wants to disable a previously established BFCP connection, it MUST assign a zero port value to the 'm' line associated with the BFCP connection, following the procedures in <xref target="RFC3264"/>.</t>
+          <t>If the BFCP stream is carried on top of TCP, and if the offerer does not want to re-establish an existing TCP connection, the offerer MUST associate 
+             an SDP connection attribute with an 'existing' value, with the 'm' line; and</t>
+          <t>If the offerer wants to disable a previously established BFCP stream, it MUST assign a zero port value to the 'm' line associated with the 
+             BFCP connection, following the procedures in <xref target="RFC3264"/>.</t>
       </list></t>
     </section>
 
-    <!-- redundant with draft-ietf-mmusic-dtls-sdp
-    <section title="DTLS Role Determination" anchor="oa-dtls-role">
-      <t>If the 'm' line proto value is 'UDP/TLS/BFCP', the 'active/passive' status is used to determine the TLS roles. Following the procedures in <xref target="RFC8122"/>, the 'active' endpoint will take the TLS client role.</t>
-      <t>Once a DTLS connection has been established, if the 'active/passive' status of the endpoints change during a session, a new DTLS connection MUST be established.  Therefore, endpoints SHOULD NOT change the 'active/passive' status in subsequent offers and answers, unless they want to establish a new DTLS connection.</t>
-      <t>The conditions above, and additional conditions under which endpoints MUST establish a new DTLS connection, are the same as defined for DTLS-SRTP in <xref target="I-D.ietf-mmusic-dtls-sdp"/>.</t>
-    </section>
-    -->
   </section>
  
  <section title="Examples" anchor="sec-example">
@@ -624,11 +713,12 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.4566" ?>
     <?rfc include="reference.RFC.6347" ?>
     <?rfc include="reference.RFC.4571" ?>
-    <?rfc include="reference.RFC.5245" ?>
     <?rfc include="reference.RFC.6544" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-dtls-sdp-32" ?>
     <?rfc include="reference.RFC.4582" ?>
     <?rfc include="reference.RFC.4583" ?>
+    <?rfc include="reference.I-D.draft-ietf-ice-rfc5245bis-18"?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-16"?>
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
