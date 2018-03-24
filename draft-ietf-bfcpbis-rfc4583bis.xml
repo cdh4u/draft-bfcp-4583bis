@@ -116,14 +116,15 @@
     <t>
        Furthermore, there are situations where both endpoints act as both floor control client and floor control server within the same session. 
        For example, in a two-party session that involves an audio stream and a shared whiteboard, one endpoint acts as the floor control server for the 
-       audio stream and the other endpoint acts as the floor control server for the shared whiteboard. However, for a given media stream one endpoint MUST 
+       audio stream and the other endpoint acts as the floor control server for the shared whiteboard. However, for a given BFCP-controlled media stream one endpoint MUST 
        act as floor control client and one endpoint MUST act as floor control server.
     </t>
  </section>
   <section title="SDP 'floorctrl' Attribute" anchor="sec:floorctrl-attr">
       <t>
-         This section defines the SDP 'floorctrl' media-level attribute. The attribute is used to determine the floor control role for a given stream (
-         represented by an SDP media description).
+         This section defines the SDP 'floorctrl' media-level attribute. The attribute is used to determine the floor control role(s) that the endpoints
+         can take for the BFCP-controlled media streams. As described in <xref target="sec:floorctrl-attr"/>, an endpoint can take different roles for different
+         media streams, but for a given media stream an endpoint can only take one role.
       </t>
       <t>
         The Augmented BNF syntax <xref target="RFC5234"/> for the attribute is:
@@ -134,15 +135,16 @@ floor-control-attribute  = "a=floorctrl:" role *(SP role)
 role                     = "c-only" / "s-only" / "c-s"
         </artwork>
       </figure>
-      <t>An endpoint includes the attribute to indicate the role(s) it would be willing to perform for the stream associated with the attribute:</t>
+      <t>An endpoint includes the attribute to indicate the role(s) it would be willing to perform for the BFCP-controlled media streams:</t>
       <t><list style="hanging">
           <t hangText="c-only:">The endpoint is willing to act as floor control client.</t>
           <t hangText="s-only:">The endpoint is willing to act as floor control server only.</t>
           <t hangText="c-s:">The endpoint is willing to act as floor control client and floor control server.</t>
       </list></t>
       <t>
-        An offerer can indicate multiple attribute value for a given session. An answerer can only indicate one attribute value. The offerer indicates which floor 
-        control role(s) that it is willing to take. The answerer indicates the role taken by the answerer. Based on this, the floor control of the offerer is determined,
+        When inserted in an offer, the offerer MAY indicate multiple attribute values. When inserted in an answer, the answerer MUST 
+        indicate only one attribute value. The offerer indicates which floor control role(s) that it is willing to take. The answerer 
+        indicates the role taken by the answerer. Based on this, the floor control role(s) of the offerer is determined,
         as shown in <xref target="tab-roles"/>.
       </t>
       <texttable title="Roles" anchor="tab-roles">
@@ -159,8 +161,8 @@ role                     = "c-only" / "s-only" / "c-s"
           <c>c-s</c>
       </texttable> 
       <t>
-        Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. For a given stream, 
-        if the 'floorctrl' attribute is not present the offerer will act as floor control client and the answerer will act as floor control server.
+        Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. 
+        If the 'floorctrl' attribute is not present the offerer will act as floor control client, and the answerer will act as floor control server, for each BFCP-controlled media stream.
       </t>
       <t>
         The SDP Offer/Answer procedures for the 'floorctrl' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -210,7 +212,7 @@ token                 = 1*(token-char)
     </t> 
     <figure>
       <artwork type='abnf'>
-floor-id-attribute = "a=floorid:" token [" mstrm:" token *(SP token)]
+floor-id-attribute = "a=floorid:" token SP "mstrm:" token *(SP token)
       </artwork>
     </figure>
     <t>
@@ -249,8 +251,8 @@ bfcp-version           = token
       The BFCP version that will eventually be used will be conveyed with a BFCP-level Hello/HelloAck.
     </t>
     <t>
-      Endpoints compliant with <xref target="RFC4583"/> might not always include the 'bfcpver' attribute in offers and answers. For a given stream, 
-      if the 'bfcpver' attribute is not present, the default values are inferred from the transport specified in the 'm' line (<xref target="sec:m-line"/>) 
+      Endpoints compliant with <xref target="RFC4583"/> might not always include the 'bfcpver' attribute in offers and answers. 
+      If the 'bfcpver' attribute is not present, the default values are inferred from the transport specified in the 'm' line (<xref target="sec:m-line"/>) 
       associated with the stream. In accordance with definition of the Version field in <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, when used over a reliable 
       transport the default attribute value is "1", and when used over an unreliable transport the default attribute value is "2".
     </t>
@@ -387,7 +389,7 @@ bfcp-version           = token
       in <xref target="RFC8122"/>.
     </t>
     <t>
-      This section only defines the BFCP-specific procedures. The procedures apply to an 'm' line describing a BFCP stream. If an offer or answer contains multiple 'm' lines describing 
+      This section only defines the BFCP-specific procedures. Unless explicitly stated otherwise, the procedures apply to an 'm' line describing a BFCP stream. If an offer or answer contains multiple 'm' lines describing 
       BFCP streams, the procedures are applied independently to each stream.
     </t>
     <t>
@@ -411,12 +413,12 @@ bfcp-version           = token
         When the offerer creates an initial offer, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>), with the 'm' line;</t>
-          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>), with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>), with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>), with the 'm' line;</t>
-          <t>MUST associate an SDP 'label' attribute (<xref target="sec:floorid-attr"/>), with the 'm' line; and</t>
-          <t>MUST associate an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>), with the 'm' line.</t>
+          <t>MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) with the 'm' line;</t>
+          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line;</t>
+          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line;</t>
+          <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line;</t>
+          <t>MUST associate an SDP 'label' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line of each BFCP-controlled media stream; and</t>
+          <t>MUST associate an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>) with the 'm' line.</t>
       </list></t>
     </section>
 
@@ -429,7 +431,7 @@ bfcp-version           = token
           <t>MUST associate an SDP 'confid' attribute with the 'm' line;</t>
           <t>MUST associate an SDP 'userid' attribute with the 'm' line;</t>
           <t>MUST associate an SDP 'floorid' attribute with the 'm' line;</t>
-          <t>MUST associate an SDP 'label' attribute with the 'm' line; and</t>
+          <t>MUST associate an SDP 'label' attribute with the 'm' line of each BFCP-controlled media stream; and</t>
           <t>MUST, if the offer contained an SDP 'bfcpver' attribute, associate a 'bfcpver' attribute with the 'm' line.</t>
       </list></t>
       <t><list style="empty">
