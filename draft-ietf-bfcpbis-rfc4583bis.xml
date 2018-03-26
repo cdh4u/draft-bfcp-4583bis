@@ -410,33 +410,55 @@ bfcp-version           = token
       
     <section title="Generating the Initial SDP Offer" anchor="oa-gen-initial-offer">
       <t>
-        When the offerer creates an initial offer, the offerer:
+        When the offerer creates an initial offer, the offerer MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) with the 'm' line.
+      </t>
+      <t>
+        In addition, if the offerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the offer, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) with the 'm' line;</t>
           <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line;</t>
           <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line;</t>
           <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line;</t>
           <t>MUST associate an SDP 'label' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line of each BFCP-controlled media stream; and</t>
           <t>MUST associate an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>) with the 'm' line.</t>
       </list></t>
+      <t><list style="empty">
+        <t>
+          Note: If the offerer includes an SDP 'floorctrl' attribute with an 'c-s' attribute value in the offer, the attribute values above will only be used if it is determined
+          (<xref target="sec:floorctrl-attr"/>) that the offerer will act as floor control server. If it is determined that the offerer will act as both floor
+          control server and floor control client, the attribute values will be used for the BFCP-controlled media streams where the offerer acts as floor
+          control server.
+        </t>
+      </list></t>
     </section>
 
     <section title="Generating the SDP Answer" anchor="oa-gen-answer">
       <t>
-        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, if the answerer accepts the 'm' line it:</t>
+        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, if the answerer accepts the 'm' line it:
+      </t>
       <t><list style="symbols">
           <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/></t>
           <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line;</t>
+      </list></t>    
+      <t>
+        In addition, if the answerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the answer, the answerer:
+      </t>
+      <t><list style="symbols">          
           <t>MUST associate an SDP 'confid' attribute with the 'm' line;</t>
           <t>MUST associate an SDP 'userid' attribute with the 'm' line;</t>
           <t>MUST associate an SDP 'floorid' attribute with the 'm' line;</t>
           <t>MUST associate an SDP 'label' attribute with the 'm' line of each BFCP-controlled media stream; and</t>
-          <t>MUST, if the offer contained an SDP 'bfcpver' attribute, associate a 'bfcpver' attribute with the 'm' line.</t>
+          <t>MUST associate a 'bfcpver' attribute with the 'm' line.</t>
       </list></t>
       <t><list style="empty">
-        <t>Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in offers, in which cases
-        the default values apply.</t>
+        <t>
+          Note: If the answerer includes an SDP 'floorctrl' attribute with an 'c-s' attribute value in the answer, the attribute values will be used for 
+          the BFCP-controlled media streams where the answerer acts as floor control server.
+        </t>
+        <t>
+          Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in offers, in which cases
+          the default values apply.
+        </t>
       </list></t>
       <t>
         Once the answerer has sent the answer, the answerer:
