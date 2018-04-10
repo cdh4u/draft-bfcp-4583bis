@@ -4,7 +4,7 @@
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-21" obsoletes="4583">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-22" obsoletes="4583">
 
 <?rfc strict="yes"?>
 <?rfc toc="yes"?>
@@ -16,20 +16,6 @@
 
 <front>
   <title abbrev="BFCP">Session Description Protocol (SDP) Format for Binary Floor Control Protocol (BFCP) Streams</title>
-
-  
-  <author initials="C.H." surname="Holmberg" fullname="Christer Holmberg">
-    <organization>Ericsson</organization>
-    <address>
-       <postal>
-         <street>Hirsalantie 11</street>
-          <code>02420</code>
-          <city>Jorvas</city>
-          <country>Finland</country>
-       </postal>
-       <email>christer.holmberg@ericsson.com</email>
-     </address>
-  </author>
   
   <author initials="G." surname="Camarillo" fullname="Gonzalo Camarillo">
     <organization>Ericsson</organization>
@@ -53,6 +39,19 @@
       </postal>
       <email>tomkrist@cisco.com, tomkri@ifi.uio.no</email>
     </address>
+  </author>
+
+  <author initials="C.H." surname="Holmberg" fullname="Christer Holmberg">
+    <organization>Ericsson</organization>
+    <address>
+       <postal>
+         <street>Hirsalantie 11</street>
+          <code>02420</code>
+          <city>Jorvas</city>
+          <country>Finland</country>
+       </postal>
+       <email>christer.holmberg@ericsson.com</email>
+     </address>
   </author>
 
   <date year="2018"/>
@@ -742,7 +741,7 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.4582" ?>
     <?rfc include="reference.RFC.4583" ?>
     <?rfc include="reference.I-D.draft-ietf-ice-rfc5245bis-20"?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-16"?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-20"?>
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
