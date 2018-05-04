@@ -433,13 +433,14 @@ bfcp-version           = token
 
     <section title="Generating the SDP Answer" anchor="oa-gen-answer">
       <t>
-        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, if the answerer accepts the 'm' line it:
+        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, the answerer MUST check whether it supports 
+        one or more of the BFCP versions supported by the offerer (<xref target="sec:bfcp-version-attr"/>). If the answerer does not support 
+        any of the BFCP versions, it MUST NOT accept the 'm' line. Otherwise, if the answerer accepts the 'm' line, it: 
       </t>
       <t><list style="symbols">
           <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
-          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line; and</t>
-          <t>MUST associate a 'bfcpver' attribute with the 'm' line. The answerer MUST only indcate support of BFCP versions also supported 
-             by the offerer. If the answerer does not support any of the versions supported by the offerer, the answerer MUST NOT accept the 'm' line.</t>
+          <t>MUST associate a 'bfcpver' attribute with the 'm' line. The answerer only indicates support of BFCP versions also supported by the offerer; and</t>
+          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line.</t>
       </list></t>    
       <t>
         In addition, if the answerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the answer, the answerer:
