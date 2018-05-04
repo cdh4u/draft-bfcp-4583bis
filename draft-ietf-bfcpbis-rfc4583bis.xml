@@ -409,17 +409,17 @@ bfcp-version           = token
       
     <section title="Generating the Initial SDP Offer" anchor="oa-gen-initial-offer">
       <t>
-        When the offerer creates an initial offer, the offerer MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) with the 'm' line.
+        When the offerer creates an initial offer, the offerer MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) 
+        and an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>) with the 'm' line.
       </t>
       <t>
         In addition, if the offerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the offer, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line;</t>
-          <t>MUST associate an SDP 'label' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line of each BFCP-controlled media stream; and</t>
-          <t>MUST associate an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>) with the 'm' line.</t>
+          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line; and</t>
+          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line; and</t>
+          <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line; and</t>
+          <t>MUST associate an SDP 'label' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line of each BFCP-controlled media stream.</t>
       </list></t>
       <t><list style="empty">
         <t>
@@ -436,18 +436,19 @@ bfcp-version           = token
         When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, if the answerer accepts the 'm' line it:
       </t>
       <t><list style="symbols">
-          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/></t>
-          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line;</t>
+          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
+          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line; and</t>
+          <t>MUST associate a 'bfcpver' attribute with the 'm' line. The answerer MUST only indcate support of BFCP versions also supported 
+             by the offerer. If the answerer does not support any of the versions supported by the offerer, the answerer MUST NOT accept the 'm' line.</t>
       </list></t>    
       <t>
         In addition, if the answerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the answer, the answerer:
       </t>
       <t><list style="symbols">          
-          <t>MUST associate an SDP 'confid' attribute with the 'm' line;</t>
-          <t>MUST associate an SDP 'userid' attribute with the 'm' line;</t>
-          <t>MUST associate an SDP 'floorid' attribute with the 'm' line;</t>
-          <t>MUST associate an SDP 'label' attribute with the 'm' line of each BFCP-controlled media stream; and</t>
-          <t>MUST associate a 'bfcpver' attribute with the 'm' line.</t>
+          <t>MUST associate an SDP 'confid' attribute with the 'm' line; and</t>
+          <t>MUST associate an SDP 'userid' attribute with the 'm' line; and</t>
+          <t>MUST associate an SDP 'floorid' attribute with the 'm' line; and</t>
+          <t>MUST associate an SDP 'label' attribute with the 'm' line of each BFCP-controlled media stream.</t>
       </list></t>
       <t><list style="empty">
         <t>
@@ -489,8 +490,8 @@ bfcp-version           = token
         the default values apply.</t>
       </list></t>
       <t>
-        If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer, the offerer MUST NOT establish a 
-        TCP connection or a TLS/DTLS connection associated with the 'm' line.
+        If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer (e.g., if the answerer only
+        indicates support of BFCP versions not supported by the offerer), the offerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.
       </t>
     </section>
 
@@ -525,7 +526,7 @@ a=confid:4321
 a=userid:1234
 a=floorid:1 mstrm:10
 a=floorid:2 mstrm:11
-a=bfcpver:1
+a=bfcpver:1 2
 m=audio 50002 RTP/AVP 0
 a=label:10
 m=video 50004 RTP/AVP 31
@@ -543,6 +544,7 @@ a=fingerprint:sha-256 \
      6B:8B:F0:65:5F:78:E2:51:3B:AC:6F:F3:3F:46:1B:35: \
      DC:B8:5F:64:1A:24:C2:43:F0:A1:58:D0:A1:2C:19:08
 a=floorctrl:c-only
+a=bfcpver:1
 m=audio 55000 RTP/AVP 0
 m=video 55002 RTP/AVP 31
       </artwork>
@@ -562,7 +564,7 @@ a=confid:4321
 a=userid:1234
 a=floorid:1 mstrm:10
 a=floorid:2 mstrm:11
-a=bfcpver:2
+a=bfcpver:1 2
 m=audio 50002 RTP/AVP 0
 a=label:10
 m=video 50004 RTP/AVP 31
