@@ -125,15 +125,24 @@
          can take for the BFCP-controlled media streams. As described in <xref target="sec:floorctrl-attr"/>, an endpoint can take different roles for different
          media streams, but for a given media stream an endpoint can only take one role.
       </t>
-      <t>
-        The Augmented BNF syntax <xref target="RFC5234"/> for the attribute is:
-      </t> 
-      <figure>
-        <artwork type='abnf'>
-floor-control-attribute  = "a=floorctrl:" role *(SP role)
-role                     = "c-only" / "s-only" / "c-s"
-        </artwork>
-      </figure>
+    <figure>
+      <artwork type='abnf'>
+      Attribute Name: floorctrl
+
+      Attribute Value: floor-control
+
+      Usage Level: media
+
+      Charset Dependent: No
+
+      Mux Category: TBD
+
+    The Augmented BNF syntax [RFC5234] for the attribute is:
+
+      floor-control = role *(SP role)
+      role = "c-only" / "s-only" / "c-s"
+      </artwork>
+     </figure>
       <t>An endpoint includes the attribute to indicate the role(s) it would be willing to perform for the BFCP-controlled media streams:</t>
       <t><list style="hanging">
           <t hangText="c-only:">The endpoint is willing to act as floor control client.</t>
@@ -179,21 +188,42 @@ role                     = "c-only" / "s-only" / "c-s"
       This section defines the SDP 'confid' and the 'userid' media-level attributes. The attributes are used by a floor control server 
       to convey the conference ID value and user ID value to the floor control client, using decimal integer representation.
     </t>  
-    <t>
-        The Augmented BNF syntax <xref target="RFC5234"/> for the attributes is:
-    </t> 
     <figure>
       <artwork type='abnf'>
-confid-attribute      = "a=confid:" conference-id
-conference-id         = token
-userid-attribute      = "a=userid:" user-id
-user-id               = token
+      Attribute Name: confid
 
-token-char            = %x21 / %x23-27 / %x2A-2B / %x2D-2E / %x30-39
-                        / %x41-5A / %x5E-7E
-token                 = 1*(token-char)
+      Attribute Value: conference-id
 
-   ;token-char and token elements are defined in [RFC4566].
+      Usage Level: media
+
+      Charset Dependent: No
+
+      Mux Category: TBD
+
+    The Augmented BNF syntax [RFC5234] for the attribute is:
+
+      conference-id = token
+      
+      ;token is defined in [RFC4566]
+      </artwork>
+    </figure>
+    <figure>
+      <artwork type='abnf'>
+      Attribute Name: userid
+
+      Attribute Value: user-id
+
+      Usage Level: media
+
+      Charset Dependent: No
+
+      Mux Category: TBD
+
+    The Augmented BNF syntax [RFC5234] for the attribute is:
+
+      user-id = token
+      
+      ;token is defined in [RFC4566] 
       </artwork>
     </figure>
     <t>
@@ -206,12 +236,24 @@ token                 = 1*(token-char)
       This section defines the SDP 'floorid' media-level attribute. The attribute conveys a floor identifier, and optionally pointers to one or more
       BFCP-controlled media streams.
     </t>      
-    <t>
-      The Augmented BNF syntax <xref target="RFC5234"/> for the attribute is:
-    </t> 
     <figure>
       <artwork type='abnf'>
-floor-id-attribute = "a=floorid:" token SP "mstrm:" token *(SP token)
+      Attribute Name: floorid
+
+      Attribute Value: floor-id
+
+      Usage Level: media
+
+      Charset Dependent: No
+
+      Mux Category: TBD
+
+    The Augmented BNF syntax [RFC5234] for the attribute is:
+
+      floor-id = "a=floorid:" DIGIT SP "mstrm:" token *(SP token)
+
+      ;DIGIT is defined in [RFC5234]
+      ;token is defined in [RFC4566]
       </artwork>
     </figure>
     <t>
@@ -237,13 +279,26 @@ floor-id-attribute = "a=floorid:" token SP "mstrm:" token *(SP token)
     <t>
       The Augmented BNF syntax <xref target="RFC5234"/> for the attributes is:
     </t> 
-       
     <figure>
       <artwork type='abnf'>
-bfcp-version-attribute = "a=bfcpver:" bfcp-version *(SP bfcp-version)
-bfcp-version           = token
+      Attribute Name: bfcpver
+
+      Attribute Value: bfcp-version
+
+      Usage Level: media
+
+      Charset Dependent: No
+
+      Mux Category: TBD
+
+    The Augmented BNF syntax [RFC5234] for the attribute is:
+
+      bfcp-version-attribute = "a=bfcpver:" bfcp-version *(SP bfcp-version)
+      bfcp-version           = 1*DIGIT
+
+      ;DIGIT is defined in [RFC5234]
       </artwork>
-    </figure>
+    </figure>       
     <t>
       An endpoint uses the 'bfcpver' attribute to convey the version(s) of BFCP supported by the endpoint, using integer values. For a given version, the attribute 
       value representing the version MUST match the "Version" field that would be presented in the BFCP COMMON-HEADER <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>. 
@@ -392,6 +447,11 @@ bfcp-version           = token
       BFCP streams, the procedures are applied independently to each stream.
     </t>
     <t>
+      Within this document, 'initial offer' refers to the first offer, within an SDP session (e.g. a SIP
+      dialog when the Session Initiation Protocol (SIP) <xref target="RFC3261"/> is used to carry SDP), in which the offerer 
+      indicates that it wants to negotiate the establishment of a BFCP stream.
+    </t>
+    <t>
       If the 'm' line 'proto' value is 'TCP/TLS/BFCP', 'TCP/DTLS/BFCP' or 'UDP/TLS/BFCP', the offerer and answerer follow the generic procedures 
       defined in <xref target="RFC8122"/>.
     </t>
@@ -481,7 +541,7 @@ bfcp-version           = token
         When the offerer receives an answer, which contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST, if the offer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the offerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
              initiate the establishing of the TCP connection; and</t>
           <t>MUST, if the offerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
              initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
@@ -629,68 +689,53 @@ m=video 55004 RTP/AVP 31
     </section>
 
     <section title="Registration of the SDP 'floorctrl' Attribute">
-      <t>The IANA has registered the following SDP att-field under the Session Description Protocol (SDP) Parameters registry:</t>
-      <t><list style="hanging">
-          <t hangText="Contact name:             ">iesg@ietf.org</t>
-          <t hangText="Attribute name:           ">floorctrl</t>
-          <t hangText="Long-form attribute name: ">Floor Control</t>
-          <t hangText="Type of attribute:        ">Media level</t>
-          <t hangText="Subject to charset:       ">No</t>
-          <t hangText="Purpose of attribute:     ">The 'floorctrl' attribute is used to perform floor control server determination.</t>
-          <t hangText="Allowed attribute values: "> 1*("c-only" / "s-only" / "c-s")</t>
-      </list></t>
+      <t>
+        This document defines the SDP attribute,'floorctrl'.
+        The details of the attribute are defined in <xref anchor="sec:floorctrl-attr"/>.
+      </t>
+      <t>
+        For issues regarding this attribute contact <iesg@ietf.org>.
+      </t>
     </section>
 
     <section title="Registration of the SDP 'confid' Attribute">
-      <t>The IANA has registered the following SDP att-field under the Session Description Protocol (SDP) Parameters registry:</t>
-      <t><list style="hanging">
-          <t hangText="Contact name:             ">iesg@ietf.org</t>
-          <t hangText="Attribute name:           ">confid</t>
-          <t hangText="Long-form attribute name: ">Conference Identifier</t>
-          <t hangText="Type of attribute:        ">Media level</t>
-          <t hangText="Subject to charset:       ">No</t>
-          <t hangText="Purpose of attribute:     ">The 'confid' attribute carries the integer representation of a Conference ID.</t>
-          <t hangText="Allowed attribute values: ">A token</t>
-      </list></t>
+      <t>
+        This document defines the SDP attribute,'confid'.
+        The details of the attribute are defined in <xref anchor="sec:confid-userid-attr"/>.
+      </t>
+      <t>
+        For issues regarding this attribute contact <iesg@ietf.org>.
+      </t>
     </section>
 
     <section title="Registration of the SDP 'userid' Attribute">
-      <t>The IANA has registered the following SDP att-field under the Session Description Protocol (SDP) Parameters registry:</t>
-      <t><list style="hanging">
-          <t hangText="Contact name:             ">iesg@ietf.org</t>
-          <t hangText="Attribute name:           ">userid</t>
-          <t hangText="Long-form attribute name: ">User Identifier</t>
-          <t hangText="Type of attribute:        ">Media level</t>
-          <t hangText="Subject to charset:       ">No</t>
-          <t hangText="Purpose of attribute:     ">The 'userid' attribute carries the integer representation of a User ID.</t>
-          <t hangText="Allowed attribute values: ">A token</t>
-      </list></t>
+      <t>
+        This document defines the SDP attribute,'userid'.
+        The details of the attribute are defined in <xref anchor="sec:confid-userid-attr"/>.
+      </t>
+      <t>
+        For issues regarding this attribute contact <iesg@ietf.org>.
+      </t>
     </section>
 
     <section title="Registration of the SDP 'floorid' Attribute">
-      <t>The IANA has registered the following SDP att-field under the Session Description Protocol (SDP) Parameters registry:</t>
-      <t><list style="hanging">
-          <t hangText="Contact name:             ">iesg@ietf.org</t>
-          <t hangText="Attribute name:           ">floorid</t>
-          <t hangText="Long-form attribute name: ">Floor Identifier</t>
-          <t hangText="Type of attribute:        ">Media level</t>
-          <t hangText="Subject to charset:       ">No</t>
-          <t hangText="Purpose of attribute:     ">The 'floorid' attribute associates a floor with one or more media streams.</t>
-          <t hangText="Allowed attribute values: ">Tokens</t>
-      </list></t>
+      <t>
+        This document defines the SDP attribute,'floorid'.
+        The details of the attribute are defined in <xref anchor="sec:floorid-attr"/>.
+      </t>
+      <t>
+        For issues regarding this attribute contact <iesg@ietf.org>.
+      </t>
     </section>
  
-    <section title="Registration of the SDP 'bfcpver' Attribute" anchor="sec:bfcpver-reg">
-      <t>The IANA has registered the following SDP att-field under the Session Description Protocol (SDP) Parameters registry:</t>
-      <t><list style="hanging">
-          <t hangText="Contact name:             ">iesg@ietf.org</t>
-          <t hangText="Attribute name:           ">bfcpver</t>
-          <t hangText="Long-form attribute name: ">BFCP Version</t>
-          <t hangText="Type of attribute:        ">Media level</t>
-          <t hangText="Subject to charset:       ">No</t>
-          <t hangText="Purpose of attribute:     ">The 'bfcpver' attribute lists supported BFCP versions.</t>
-          <t hangText="Allowed attribute values: ">Tokens</t>
-      </list></t>
+    <section title="Registration of the SDP 'bfcpver' Attribute">
+      <t>
+        This document defines the SDP attribute,'bfcpver'.
+        The details of the attribute are defined in <xref anchor="sec:bfcp-version-attr"/>.
+      </t>
+      <t>
+        For issues regarding this attribute contact <iesg@ietf.org>.
+      </t>
     </section>
   </section>
 
@@ -733,18 +778,18 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.3264" ?>
     <?rfc include="reference.RFC.5750" ?>
     <?rfc include="reference.RFC.4145" ?>
-    <?rfc include="reference.I-D.draft-ietf-bfcpbis-rfc4582bis-16" ?>    <!-- TBD increase version! -->
     <?rfc include="reference.RFC.4574" ?>
     <?rfc include="reference.RFC.8122" ?>
     <?rfc include="reference.RFC.4566" ?>
     <?rfc include="reference.RFC.6347" ?>
     <?rfc include="reference.RFC.4571" ?>
     <?rfc include="reference.RFC.6544" ?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-dtls-sdp-32" ?>
     <?rfc include="reference.RFC.4582" ?>
     <?rfc include="reference.RFC.4583" ?>
     <?rfc include="reference.I-D.draft-ietf-ice-rfc5245bis-20"?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-20"?>
+    <?rfc include="reference.I-D.draft-ietf-bfcpbis-rfc4582bis-16" ?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-dtls-sdp-32" ?>
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
