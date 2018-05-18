@@ -202,9 +202,9 @@
 
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
-      conference-id = token
+      conference-id = 1*DIGIT
       
-      ;token is defined in [RFC4566]
+      ;DIGIT is defined in [RFC5234] 
       </artwork>
     </figure>
     <figure>
@@ -221,9 +221,9 @@
 
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
-      user-id = token
+      user-id = 1*DIGIT
       
-      ;token is defined in [RFC4566] 
+      ;DIGIT is defined in [RFC5234] 
       </artwork>
     </figure>
     <t>
@@ -250,7 +250,7 @@
 
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
-      floor-id = "a=floorid:" DIGIT SP "mstrm:" token *(SP token)
+      floor-id = "a=floorid:" 1*DIGIT SP "mstrm:" token *(SP token)
 
       ;DIGIT is defined in [RFC5234]
       ;token is defined in [RFC4566]
