@@ -4,7 +4,7 @@
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-22" obsoletes="4583">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-23" obsoletes="4583">
 
 <?rfc strict="yes"?>
 <?rfc toc="yes"?>
@@ -293,8 +293,8 @@
 
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
-      bfcp-version-attribute = "a=bfcpver:" bfcp-version *(SP bfcp-version)
-      bfcp-version           = 1*DIGIT
+      bfcp-version = "a=bfcpver:" version *(SP version)
+      version      = 1*DIGIT
 
       ;DIGIT is defined in [RFC5234]
       </artwork>
@@ -661,7 +661,7 @@ m=video 55004 RTP/AVP 31
 
   <section title="IANA Considerations" anchor="sec:iana">
     <t><list style="empty">
-      <t>[Editorial note: The changes in <xref target="sec:proto-reg"/> instruct the IANA to register the three new values TCP/DTLS/BFCP, UDP/BFCP and UDP/TLS/BFCP for the SDP 'proto' field. The new section <xref target="sec:bfcpver-reg"/> registers a new SDP "bfcpver" attribute. The rest is unchanged from <xref target="RFC4582"/>.]</t>
+      <t>[Editorial note: The changes in <xref target="sec:proto-reg"/> instruct the IANA to register the three new values TCP/DTLS/BFCP, UDP/BFCP and UDP/TLS/BFCP for the SDP 'proto' field. The new section <xref target="sec:bfcp-version-attr"/> registers a new SDP "bfcpver" attribute. The rest is unchanged from <xref target="RFC4582"/>.]</t>
     </list></t>
 
     <section title="Registration of SDP 'proto' Values" anchor="sec:proto-reg">
@@ -691,50 +691,50 @@ m=video 55004 RTP/AVP 31
     <section title="Registration of the SDP 'floorctrl' Attribute">
       <t>
         This document defines the SDP attribute,'floorctrl'.
-        The details of the attribute are defined in <xref anchor="sec:floorctrl-attr"/>.
+        The details of the attribute are defined in <xref target="sec:floorctrl-attr"/>.
       </t>
       <t>
-        For issues regarding this attribute contact <iesg@ietf.org>.
+        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
 
     <section title="Registration of the SDP 'confid' Attribute">
       <t>
         This document defines the SDP attribute,'confid'.
-        The details of the attribute are defined in <xref anchor="sec:confid-userid-attr"/>.
+        The details of the attribute are defined in <xref target="sec:confid-userid-attr"/>.
       </t>
       <t>
-        For issues regarding this attribute contact <iesg@ietf.org>.
+        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
 
     <section title="Registration of the SDP 'userid' Attribute">
       <t>
         This document defines the SDP attribute,'userid'.
-        The details of the attribute are defined in <xref anchor="sec:confid-userid-attr"/>.
+        The details of the attribute are defined in <xref target="sec:confid-userid-attr"/>.
       </t>
       <t>
-        For issues regarding this attribute contact <iesg@ietf.org>.
+        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
 
     <section title="Registration of the SDP 'floorid' Attribute">
       <t>
         This document defines the SDP attribute,'floorid'.
-        The details of the attribute are defined in <xref anchor="sec:floorid-attr"/>.
+        The details of the attribute are defined in <xref target="sec:floorid-attr"/>.
       </t>
       <t>
-        For issues regarding this attribute contact <iesg@ietf.org>.
+        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
  
     <section title="Registration of the SDP 'bfcpver' Attribute">
       <t>
         This document defines the SDP attribute,'bfcpver'.
-        The details of the attribute are defined in <xref anchor="sec:bfcp-version-attr"/>.
+        The details of the attribute are defined in <xref target="sec:bfcp-version-attr"/>.
       </t>
       <t>
-        For issues regarding this attribute contact <iesg@ietf.org>.
+        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
   </section>
@@ -793,7 +793,7 @@ m=video 55004 RTP/AVP 31
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-49" ?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-51" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-mux-attributes-17" ?>
   </references>
 </back>
