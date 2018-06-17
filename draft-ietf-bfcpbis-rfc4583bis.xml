@@ -72,13 +72,42 @@
 
 <middle>
   <section title="Introduction">
-    <t>As discussed in the BFCP (Binary Floor Control Protocol) specification <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, a given BFCP client needs a set of data in order to establish a BFCP connection to a floor control server. This data includes the transport address of the server, the conference identifier, and the user identifier.</t>
-    <t>One way for clients to obtain this information is to use an SDP offer/answer <xref target="RFC3264"/> exchange. This document specifies how to encode this information in the SDP session descriptions that are part of such an offer/answer exchange.</t>
-    <t>User agents typically use the offer/answer model to establish a number of media streams of different types. Following this model, a BFCP connection is described as any other media stream by using an SDP 'm' line, possibly followed by a number of attributes encoded in 'a' lines.</t>
+    <t>As discussed in the BFCP (Binary Floor Control Protocol) specification <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, a 
+    given BFCP client needs a set of data in order to establish a BFCP connection to a floor control server. This data includes 
+    the transport address of the server, the conference identifier, and the user identifier.</t>
+    <t>One way for clients to obtain this information is to use an SDP offer/answer <xref target="RFC3264"/> exchange. 
+    This document specifies how to encode this information in the SDP session descriptions that are part of such an offer/answer 
+    exchange.</t>
+    <t>User agents typically use the offer/answer model to establish a number of media streams of different types. 
+    Following this model, a BFCP connection is described as any other media stream by using an SDP 'm' line, possibly
+    followed by a number of attributes encoded in 'a' lines.</t>
+    <t><xref target="sec:m-line"/> defines how the field values in 'm' line representing a BFCP connection are set.</t>
+    <t><xref target="sec:attributes"/> defines SDP attributes that are used when negotiating a BFCP connection.</t>
+    <t><xref target="sec:mux-cons"/> defines multiplexing considerations for a BFCP connection.</t>
+    <t><xref target="sec:bfcp-connection"/> defines procedures for managing a BFCP connection.</t>
+    <t><xref target="sec:authentication"/> defines TLS and DTLS considerations when negotiating a BFCP connection.</t>
+    <t><xref target="sec:ice-considerations"/> defines the Interactive Connectivity Establishment (ICE) 
+    <xref target="I-D.ietf-ice-rfc5245bis"/> considerations when negotiating a BFCP connection.</t>
+    <t><xref target="sec:oa-offer-answer-proc"/> defines the SDP offer/answer procedures for negotiating a BFCP connection.</t>
   </section>
 
   <section title="Terminology" anchor="sec:terminology">
     <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14, <xref target="RFC2119">RFC 2119</xref> and indicate requirement levels for compliant implementations.</t>
+  </section>
+
+  <section title="Floor Control Roles" anchor="sec:server-determination">
+    <t>
+       When two endpoints establish a BFCP stream, they need to determine which of them acts as floor control client and which acts as floor control server. 
+       Typically, a client that establishes a BFCP stream with a conference server will act as floor control client, while the conference server will act as 
+       floor control server. However, there are scenarios where both endpoints would be able to act as floor control server. For example, in a two-party session 
+       that involves an audio stream and a shared whiteboard, the endpoints need to determine which party will be act as floor control server.
+    </t>
+    <t>
+       Furthermore, there are situations where both endpoints act as both floor control client and floor control server within the same session. 
+       For example, in a two-party session that involves an audio stream and a shared whiteboard, one endpoint acts as the floor control server for the 
+       audio stream and the other endpoint acts as the floor control server for the shared whiteboard. However, for a given BFCP-controlled media stream one endpoint MUST 
+       act as floor control client and one endpoint MUST act as floor control server.
+    </t>
   </section>
 
   <section title="Fields in the 'm' Line" anchor="sec:m-line">
@@ -105,20 +134,7 @@
     </figure>
   </section>
 
-  <section title="Floor Control Roles" anchor="sec:server-determination">
-    <t>
-       When two endpoints establish a BFCP stream, they need to determine which of them acts as floor control client and which acts as floor control server. 
-       Typically, a client that establishes a BFCP stream with a conference server will act as floor control client, while the conference server will act as 
-       floor control server. However, there are scenarios where both endpoints would be able to act as floor control server. For example, in a two-party session 
-       that involves an audio stream and a shared whiteboard, the endpoints need to determine which party will be act as floor control server.
-    </t>
-    <t>
-       Furthermore, there are situations where both endpoints act as both floor control client and floor control server within the same session. 
-       For example, in a two-party session that involves an audio stream and a shared whiteboard, one endpoint acts as the floor control server for the 
-       audio stream and the other endpoint acts as the floor control server for the shared whiteboard. However, for a given BFCP-controlled media stream one endpoint MUST 
-       act as floor control client and one endpoint MUST act as floor control server.
-    </t>
- </section>
+  <section title="SDP Attributes" anchor="sec:attributes">
   <section title="SDP 'floorctrl' Attribute" anchor="sec:floorctrl-attr">
       <t>
          This section defines the SDP 'floorctrl' media-level attribute. The attribute is used to determine the floor control role(s) that the endpoints
@@ -305,14 +321,19 @@
       The BFCP version that will eventually be used will be conveyed with a BFCP-level Hello/HelloAck.
     </t>
     <t>
-      Endpoints compliant with <xref target="RFC4583"/> might not always include the 'bfcpver' attribute in offers and answers. 
-      If the 'bfcpver' attribute is not present, the default values are inferred from the transport specified in the 'm' line (<xref target="sec:m-line"/>) 
-      associated with the stream. In accordance with definition of the Version field in <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, when used over a reliable 
-      transport the default attribute value is "1", and when used over an unreliable transport the default attribute value is "2".
+      Endpoints compliant with <xref target="RFC4583"/> might not always include the 'bfcpver'
+      attribute in offers and answers. The attribute value, if present, MUST be in accordance with 
+      the definition of the Version field in <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>. If the 
+      attribute is not present, endpoints MUST assume a default value in accordance with 
+      <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>: when used over a reliable transport the default 
+      attribute value is "1", and when used over an unreliable transport the default attribute value 
+      is "2". The value is inferred from the transport specified in the 'm' line (<xref target="sec:m-line"/>) 
+      associated with the stream. 
     </t>
     <t>
       The SDP Offer/Answer procedures for the 'bfcpver' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
     </t>
+    </section>
     </section>
     <section title="Multiplexing Considerations" anchor="sec:mux-cons">
     <t>
@@ -321,8 +342,9 @@
       Note that BFCP-controlled media streams might be multiplexed with other media streams.
     </t>
     <t>
-      <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/> defines the mux categories for the SDP attributes defined in this specification, excluding the SDP 'bfcpver' attribute. .
-      <xref target="tab:mux-tbd"/> defines the mux category for the 'bfcpver' attribute:
+      <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/> defines the mux categories for the SDP 
+      attributes defined in this specification. <xref target="tab:mux-tbd"/> defines the mux category 
+      for the 'bfcpver' attribute:
     </t>
     <texttable title="Multiplexing Attribute Analysis" anchor="tab:mux-tbd">
       <ttcol>Name</ttcol>
@@ -368,39 +390,20 @@
     </section>
   </section>
 
-  <section title="Authentication" anchor="sec:authentication">
+  <section title="TLS/DTLS Considerations" anchor="sec:authentication">
     <t>
-      When a BFCP stream is negotiated using the SDP offer/answer mechanism, it is assumed that the offerer and the answerer authenticate each other using 
-      some mechanism. TLS/DTLS is the preferred mechanism. Other mechanisms are possible, but are outside the scope of this document. Once this mutual 
-      authentication takes place, all the offerer and the answerer need to ensure is that the entity they are receiving BFCP messages from is the same as 
-      the one that generated the previous offer or answer. 
-    </t>  
-    <t>
-      The initial mutual authentication SHOULD take place at the signaling level. Additionally, signaling can use S/MIME <xref target="RFC5750"/> to provide 
-      an integrity-protected channel with optional confidentiality for the offer/answer exchange. BFCP takes advantage of this integrity-protected offer/answer 
-      exchange to perform authentication. Within the offer/answer exchange, the offerer and answerer exchange the fingerprints of their self-signed certificates. 
-      These self-signed certificates are then used to establish the TLS/DTLS connection that will carry BFCP traffic between the offerer and the answerer.
+       When DTLS is used with UDP, the generic procedures defined in Section 5 of <xref target="I-D.ietf-mmusic-dtls-sdp"/> 
+       MUST be followed.
     </t>
     <t>
-      Endpoints follow the rules in <xref target="RFC8122"/> regarding certificate choice and presentation. Endpoints that use the offer/answer model to 
-      establish BFCP streams MUST support the 'fingerprint' attribute and MUST include it in their offers and answers.
-    </t>
-    <t>
-       When TLS is used with TCP, once the underlying connection is established, the answerer, which can be the floor control client or the floor control server, 
-       acts as the TLS server regardless of its role (passive or active) in the TCP establishment procedure. If the TCP connection is lost, the active endpoint 
-       is responsible for re-establishing the TCP connection. Unless a new TLS session is negotiated, subsequent SDP offers and answers will not impact the 
-       previously negotiated TLS roles.
-    </t>
-    <t>
-       When DTLS is used with UDP, the requirements specified in Section 5 of <xref target="I-D.ietf-mmusic-dtls-sdp"/> MUST be followed.
+       When TLS is used with TCP, once the underlying connection is established, the answerer always acts as the TLS server. 
+       If the TCP connection is lost, the active endpoint is responsible for re-establishing the TCP connection. Unless a new 
+       TLS session is negotiated, subsequent SDP offers and answers will not impact the previously negotiated TLS roles.
     </t>
     <t><list style="empty">
         <t>
-          Note: How to determine which endpoint initiates the TLS/DTLS association depends on the selected underlying transport. 
-          It was decided to keep the original semantics in <xref target="RFC4583"/> for TCP to retain backwards compatibility. When using UDP, 
-          the procedure defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/> was selected in order to be compatible with other DTLS based protocol 
-          implementations, such as DTLS-SRTP. Furthermore, the procedure defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/> do not overload 
-          offer/answer semantics and works for offerless INVITE in scenarios with B2BUAs.
+          Note: For TLS, it was decided to keep the original procedures in <xref target="RFC4583"/> to determine which endpoint 
+          acts as the TLS server in order to retain backwards compatibility. 
         </t>
     </list></t>
   </section>
@@ -654,9 +657,11 @@ m=video 55004 RTP/AVP 31
   </section>
 
   <section title="Security Considerations" anchor="sec:security">
-    <t>The BFCP <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, SDP <xref target="RFC4566"/>, and offer/answer <xref target="RFC3264"/> specifications discuss security issues related to BFCP, SDP, and offer/answer, respectively. In addition, <xref target="RFC4145"/> and <xref target="RFC8122"/> discuss security issues related to the establishment of TCP and TLS connections using an offer/answer model. 
-      Furthermore, when using DTLS over UDP, considerations for its use with RTP and RTCP are presented in <xref target="I-D.ietf-mmusic-dtls-sdp"/>.  The requirements for the offer/answer exchange, as listed in Section 5 of <xref target="I-D.ietf-mmusic-dtls-sdp"/>, MUST be followed.</t>
-    <t>An initial integrity-protected channel is REQUIRED for BFCP to exchange self-signed certificates between a client and the floor control server. For session descriptions carried in SIP <xref target="RFC3261"/>, S/MIME <xref target="RFC5750"/> is the natural choice to provide such a channel.</t>
+    <t>The BFCP <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>, SDP <xref target="RFC4566"/>, and offer/answer <xref target="RFC3264"/> 
+    specifications discuss security issues related to BFCP, SDP, and offer/answer, respectively. In addition, <xref target="RFC4145"/> 
+    and <xref target="RFC8122"/> discuss security issues related to the establishment of TCP and TLS connections using an offer/answer 
+    model. Furthermore, when using DTLS over UDP, the generic offer/answer considerations defined in 
+    <xref target="I-D.ietf-mmusic-dtls-sdp"/> MUST be followed.</t>
   </section>
 
   <section title="IANA Considerations" anchor="sec:iana">
