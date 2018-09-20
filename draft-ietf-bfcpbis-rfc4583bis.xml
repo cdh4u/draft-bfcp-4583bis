@@ -99,7 +99,7 @@
     <t>
        When two endpoints establish a BFCP stream, they need to determine which of them acts as floor control client and which acts as floor control server. 
        Typically, a client that establishes a BFCP stream with a conference server will act as floor control client, while the conference server will act as 
-       floor control server. However, there are scenarios where both endpoints would be able to act as floor control server.
+       floor control server.
     </t>
     <t>
        Once the roles have been determines, the roles will apply to all BFCP-controlled streams associated with the BFCP stream.
@@ -158,13 +158,11 @@
       <t><list style="hanging">
           <t hangText="c-only:">The endpoint is willing to act as floor control client.</t>
           <t hangText="s-only:">The endpoint is willing to act as floor control server only.</t>
-          <t hangText="c-s:">The endpoint is willing to act as floor control client or floor control server.</t>
       </list></t>
       <t>
-        When inserted in an offer, the offerer MAY indicate multiple attribute values. When inserted in an answer, the answerer MUST 
-        indicate only one attribute value:"c-only" or "s-only". The offerer indicates which floor control role(s) that it is willing to take. The answerer 
-        indicates the role taken by the answerer. Based on this, the floor control role(s) of the offerer is determined,
-        as shown in <xref target="tab-roles"/>.
+        When inserted in an offer, the offerer MAY indicate multiple attribute values ("c-only" and "s-only"). When inserted in an answer, the answerer MUST 
+        indicate only one attribute value: "c-only" or "s-only". The offerer indicates which floor control role(s) that it is willing to take. The answerer 
+        indicates the role taken by the answerer. Based on this, the floor control role of the offerer is determined, as shown in <xref target="tab-roles"/>.
       </t>
       <texttable title="Roles" anchor="tab-roles">
           <ttcol align="center">Offerer</ttcol>
@@ -183,11 +181,16 @@
           <c>s-only</c>
       </texttable> 
       <t>
-        NOTE: 'c-s' is identical to 'c-only s-only' or 's-only c-only'.
+        In <xref target="RFC4583"/>, there was a third attribute specified, "c-s", which meant that an endpoint was willing to act as both floor control client and 
+        floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
+        and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
+        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or or answer, 
+        but MUST accept the attribute value in offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As as a result, each endpoint will take the 
+        same role for each BFCP-controlled media stream assocaited with the BFCP stream.
       </t>
       <t>
         Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. 
-        If the 'floorctrl' attribute is not present the offerer will act as floor control client, and the answerer will act as floor control server, for each BFCP-controlled media stream.
+        If the 'floorctrl' attribute is not present the offerer will act as floor control client, and the answerer will act as floor control server.
       </t>
       <t>
         The SDP Offer/Answer procedures for the 'floorctrl' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
