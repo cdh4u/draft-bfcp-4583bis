@@ -123,11 +123,18 @@
         <t>When TCP is used as the transport, the port field is set following the rules in <xref target="RFC4145"/>. Depending on the value of the 'setup' attribute (discussed in <xref target="sec:tcp-connection"/>), the port field contains the port to which the remote endpoint will direct BFCP messages, or in the case where the endpoint will initiate the connection towards the remote endpoint, should be set to a value of 9.</t>
         <t>When UDP is used as the transport, the port field contains the port to which the remote endpoint will direct BFCP messages regardless of the value of the 'setup' attribute.</t>
     </list></t>
-    <t>This document defines five values for the proto field: TCP/BFCP, TCP/DTLS/BFCP, TCP/TLS/BFCP, UDP/BFCP, and UDP/TLS/BFCP.</t> <!-- Just TCP/BFCP and TCP/TLS/BFCP in rfc4583 -->
-    <t>TCP/BFCP is used when BFCP runs directly on top of TCP. TCP/TLS/BFCP is used when BFCP runs on top of TLS, which in turn runs on top of TCP. TCP/DTLS/BFCP is used when
-       running BFCP on top of DTLS <xref target="RFC6347"/>, as described in this specification,which in turn runs on top of TCP using the framing method defined in <xref target="RFC4571"/> 
-       with DTLS packets being sent and received instead of RTP/RTCP packets using the shim defined in RFC 4571 such that the length field defined in RFC 4571 precedes each DTLS message.</t>
-    <t>Similarly, UDP/BFCP is used when BFCP runs directly on top of UDP, and UDP/TLS/BFCP is used when BFCP runs on top of DTLS, which in turn runs on top of UDP.</t>
+    <t>This document defines five values for the proto field: TCP/BFCP, TCP/DTLS/BFCP, TCP/TLS/BFCP, UDP/BFCP, and UDP/TLS/BFCP.</t>
+    <t>The proto value are used as described below:</t>
+    <t><list style="hanging">
+      <t>'TCP/BFCP' is used for TCP transport of BFCP without TLS encryption, and is backward compatible with RFC 4583 compliant endpoints.</t>
+      <t>'TCP/TLS/BFCP' is used for TCP transport of BFCP with TLS encryption, and is backward interoperability with RFC 4583 compliant endpoints that support TLS.</t>
+      <t>'UDP/BFCP' is used for UDP transport of BFCP without DTLS encryption <xref target="RFC6347"/>.</t>
+      <t>'UDP/TLS/BFCP' is used for UDP transport of BFCP with DTLS encryption. This is one of the options when ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE 
+          when backward compatibility with RFC 4583 compliant endpoints is not required.</t>
+      <t>'TCP/DTLS/BFCP' is used for TCP transport of BFCP with DTLS encryption, running on top of TCP using the framing method defined in <xref target="RFC4571"/>. with DTLS packets being 
+          sent and received instead of RTP/RTCP packets using the shim defined in RFC 4571 such that the length field defined in RFC 4571 precedes each DTLS message. This is one of the options when 
+          ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE when backward compatibility with RFC 4583 compliant endpoints is not required.</t> 
+    </list></t>
     <t>The fmt (format) list is not applicable to BFCP. The fmt list of 'm' lines in the case of any proto field value related to BFCP MUST contain a single "*" character. If the the fmt list contains any other value it is ignored.</t>
     <t>The following is an example of an 'm' line for a BFCP connection:</t>
     <figure>
