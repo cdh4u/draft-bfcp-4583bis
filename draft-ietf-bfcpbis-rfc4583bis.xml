@@ -198,8 +198,8 @@
         In <xref target="RFC4583"/>, there was a third attribute specified, "c-s", which meant that an endpoint was willing to act as both floor control client and 
         floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
         and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
-        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or inan answer, 
-        but MUST accept the attribute value in an offer and process itas equivalent to "c-only s-only" (or "s-only c-only"). As a	result, each endpoint will take the
+        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or in an answer, 
+        but MUST accept the attribute value in an offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As a result, each endpoint will take the
         same role for each BFCP-controlled media stream associated with the BFCP stream.
       </t>
       <t>
