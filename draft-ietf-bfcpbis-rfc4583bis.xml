@@ -107,7 +107,7 @@
        a floor control server.
     </t>
     <t>
-       Once the roles have been determines, the roles will apply to all BFCP-controlled streams associated with the BFCP stream.
+       Once the roles have been determined, the roles will apply to all BFCP-controlled streams associated with the BFCP stream.
     </t>
   </section>
 
