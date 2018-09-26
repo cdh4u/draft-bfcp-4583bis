@@ -4,7 +4,7 @@
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-23" obsoletes="4583">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-25" obsoletes="4583">
 
 <?rfc strict="yes"?>
 <?rfc toc="yes"?>
@@ -795,7 +795,6 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.5234" ?>
     <?rfc include="reference.RFC.3261" ?>
     <?rfc include="reference.RFC.3264" ?>
-    <?rfc include="reference.RFC.5750" ?>
     <?rfc include="reference.RFC.4145" ?>
     <?rfc include="reference.RFC.4574" ?>
     <?rfc include="reference.RFC.8122" ?>
@@ -813,7 +812,7 @@ m=video 55004 RTP/AVP 31
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-52" ?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-53" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-mux-attributes-17" ?>
   </references>
 </back>
