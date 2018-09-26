@@ -127,11 +127,11 @@
     <t>The proto value are used as described below:</t>
     <t><list style="hanging">
       <t>'TCP/BFCP' is used for TCP transport of BFCP without TLS encryption, and is backward compatible with RFC 4583 compliant endpoints.</t>
-      <t>'TCP/TLS/BFCP' is used for TCP transport of BFCP with TLS encryption, and is backward interoperability with RFC 4583 compliant endpoints that support TLS.</t>
+      <t>'TCP/TLS/BFCP' is used for TCP transport of BFCP with TLS encryption, and is backward compatible with RFC 4583 compliant endpoints that support TLS.</t>
       <t>'UDP/BFCP' is used for UDP transport of BFCP without DTLS encryption <xref target="RFC6347"/>.</t>
       <t>'UDP/TLS/BFCP' is used for UDP transport of BFCP with DTLS encryption. This is one of the options when ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE 
           when backward compatibility with RFC 4583 compliant endpoints is not required.</t>
-      <t>'TCP/DTLS/BFCP' is used for TCP transport of BFCP with DTLS encryption, running on top of TCP using the framing method defined in <xref target="RFC4571"/>. with DTLS packets being 
+      <t>'TCP/DTLS/BFCP' is used for TCP transport of BFCP with DTLS encryption, running on top of TCP using the framing method defined in <xref target="RFC4571"/>, with DTLS packets being 
           sent and received instead of RTP/RTCP packets using the shim defined in RFC 4571 such that the length field defined in RFC 4571 precedes each DTLS message. This is one of the options when 
           ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE when backward compatibility with RFC 4583 compliant endpoints is not required.</t> 
     </list></t>
@@ -198,9 +198,9 @@
         In <xref target="RFC4583"/>, there was a third attribute specified, "c-s", which meant that an endpoint was willing to act as both floor control client and 
         floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
         and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
-        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or or answer, 
-        but MUST accept the attribute value in offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As as a result, each endpoint will take the 
-        same role for each BFCP-controlled media stream assocaited with the BFCP stream.
+        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or inan answer, 
+        but MUST accept the attribute value in an offer and process itas equivalent to "c-only s-only" (or "s-only c-only"). As a	result, each endpoint will take the
+        same role for each BFCP-controlled media stream associated with the BFCP stream.
       </t>
       <t>
         Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. 
@@ -771,7 +771,7 @@ m=video 55004 RTP/AVP 31
         <t>BFCP Version Negotiation (<xref target="sec:bfcp-version-attr"/>):<vspace/>
           A new 'bfcpver' SDP media-level attribute is added in order to signal supported version number.</t>
     </list></t>
-    <t>In addition to the changes associated with support BFCP over unreliable transport, the possibility for an endpoint to act as both floor control client and floor control server at the same time has
+    <t>In addition to the changes associated with support of BFCP over unreliable transport, the possibility for an endpoint to act as both floor control client and floor control server at the same time has
     been removed. An endpoint will now take the same role for all BFCP-controlled streams associated with the BFCP stream.</t>
     <t>Clarification and bug fixes:</t>
     <t><list style="numbers">
