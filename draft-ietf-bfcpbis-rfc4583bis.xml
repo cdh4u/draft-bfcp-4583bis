@@ -13,6 +13,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
+<?rfc symrefs="yes" ?>
 
 <front>
   <title abbrev="BFCP">Session Description Protocol (SDP) Format for Binary Floor Control Protocol (BFCP) Streams</title>
@@ -65,7 +66,7 @@
 
   <abstract>
    <t>This document defines the Session Description Protocol (SDP) offer/answer procedures for negotiating and establishing Binary Floor Control Protocol (BFCP) streams.</t>
-    <t>This document obsoletes RFC 4583. Changes from RFC 4583 are summarized in Section 15.</t>
+    <t>This document obsoletes RFC 4583. Changes from RFC 4583 are summarized in Section 14.</t>
     <!--                                 Ensure correct section #, as xref is not allowed in abstract -->
   </abstract>
 </front>
@@ -80,33 +81,33 @@
     exchange.</t>
     <t>User agents typically use the offer/answer model to establish a number of media streams of different types. 
     Following this model, a BFCP connection is described as any other media stream by using an SDP 'm' line, possibly
-    followed by a number of attributes encoded in 'a' lines.</t>
+    followed by a number of SDP lines that also apply to the BFCP connection.</t>
     <t><xref target="sec:m-line"/> defines how the field values in 'm' line representing a BFCP connection are set.</t>
     <t><xref target="sec:attributes"/> defines SDP attributes that are used when negotiating a BFCP connection.</t>
     <t><xref target="sec:mux-cons"/> defines multiplexing considerations for a BFCP connection.</t>
     <t><xref target="sec:bfcp-connection"/> defines procedures for managing a BFCP connection.</t>
     <t><xref target="sec:authentication"/> defines TLS and DTLS considerations when negotiating a BFCP connection.</t>
     <t><xref target="sec:ice-considerations"/> defines the Interactive Connectivity Establishment (ICE) 
-    <xref target="I-D.ietf-ice-rfc5245bis"/> considerations when negotiating a BFCP connection.</t>
+    <xref target="RFC8445"/> considerations when negotiating a BFCP connection.</t>
     <t><xref target="sec:oa-offer-answer-proc"/> defines the SDP offer/answer procedures for negotiating a BFCP connection.</t>
   </section>
 
-  <section title="Terminology" anchor="sec:terminology">
-    <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14, <xref target="RFC2119">RFC 2119</xref> and indicate requirement levels for compliant implementations.</t>
+  <section title="Conventions">
+    <t>
+      The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+      "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <xref target="RFC2119"></xref> <xref target="RFC8174"></xref>
+      when, and only when, they appear in all capitals, as shown here.
+      </t>
   </section>
 
   <section title="Floor Control Roles" anchor="sec:server-determination">
     <t>
-       When two endpoints establish a BFCP stream, they need to determine which of them acts as floor control client and which acts as floor control server. 
-       Typically, a client that establishes a BFCP stream with a conference server will act as floor control client, while the conference server will act as 
-       floor control server. However, there are scenarios where both endpoints would be able to act as floor control server. For example, in a two-party session 
-       that involves an audio stream and a shared whiteboard, the endpoints need to determine which party will be act as floor control server.
+       When two endpoints establish a BFCP stream, they need to determine which of them acts as a floor control client and which acts as a floor control server. 
+       Typically, a client that establishes a BFCP stream with a conference server will act as a floor control client, while the conference server will act as 
+       a floor control server.
     </t>
     <t>
-       Furthermore, there are situations where both endpoints act as both floor control client and floor control server within the same session. 
-       For example, in a two-party session that involves an audio stream and a shared whiteboard, one endpoint acts as the floor control server for the 
-       audio stream and the other endpoint acts as the floor control server for the shared whiteboard. However, for a given BFCP-controlled media stream one endpoint MUST 
-       act as floor control client and one endpoint MUST act as floor control server.
+       Once the roles have been determines, the roles will apply to all BFCP-controlled streams associated with the BFCP stream.
     </t>
   </section>
 
@@ -122,9 +123,18 @@
         <t>When TCP is used as the transport, the port field is set following the rules in <xref target="RFC4145"/>. Depending on the value of the 'setup' attribute (discussed in <xref target="sec:tcp-connection"/>), the port field contains the port to which the remote endpoint will direct BFCP messages, or in the case where the endpoint will initiate the connection towards the remote endpoint, should be set to a value of 9.</t>
         <t>When UDP is used as the transport, the port field contains the port to which the remote endpoint will direct BFCP messages regardless of the value of the 'setup' attribute.</t>
     </list></t>
-    <t>This document defines five values for the proto field: TCP/BFCP, TCP/DTLS/BFCP, TCP/TLS/BFCP, UDP/BFCP, and UDP/TLS/BFCP.</t> <!-- Just TCP/BFCP and TCP/TLS/BFCP in rfc4583 -->
-    <t>TCP/BFCP is used when BFCP runs directly on top of TCP. TCP/TLS/BFCP is used when BFCP runs on top of TLS, which in turn runs on top of TCP. TCP/DTLS/BFCP is used when running BFCP on top of DTLS <xref target="RFC6347"/>, as described in this specification, which in turn runs on top of TCP using the framing method defined in  <xref target="RFC4571"/> with DTLS packets being sent and received instead of RTP/RTCP packets using the shim defined in RFC4571 such that the length field defined in RFC4571 precedes each DTLS message.</t>
-    <t>Similarly, UDP/BFCP is used when BFCP runs directly on top of UDP, and UDP/TLS/BFCP is used when BFCP runs on top of DTLS, which in turn runs on top of UDP.</t>
+    <t>This document defines five values for the proto field: TCP/BFCP, TCP/DTLS/BFCP, TCP/TLS/BFCP, UDP/BFCP, and UDP/TLS/BFCP.</t>
+    <t>The proto value are used as described below:</t>
+    <t><list style="hanging">
+      <t>'TCP/BFCP' is used for TCP transport of BFCP without TLS encryption, and is backward compatible with RFC 4583 compliant endpoints.</t>
+      <t>'TCP/TLS/BFCP' is used for TCP transport of BFCP with TLS encryption, and is backward interoperability with RFC 4583 compliant endpoints that support TLS.</t>
+      <t>'UDP/BFCP' is used for UDP transport of BFCP without DTLS encryption <xref target="RFC6347"/>.</t>
+      <t>'UDP/TLS/BFCP' is used for UDP transport of BFCP with DTLS encryption. This is one of the options when ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE 
+          when backward compatibility with RFC 4583 compliant endpoints is not required.</t>
+      <t>'TCP/DTLS/BFCP' is used for TCP transport of BFCP with DTLS encryption, running on top of TCP using the framing method defined in <xref target="RFC4571"/>. with DTLS packets being 
+          sent and received instead of RTP/RTCP packets using the shim defined in RFC 4571 such that the length field defined in RFC 4571 precedes each DTLS message. This is one of the options when 
+          ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE when backward compatibility with RFC 4583 compliant endpoints is not required.</t> 
+    </list></t>
     <t>The fmt (format) list is not applicable to BFCP. The fmt list of 'm' lines in the case of any proto field value related to BFCP MUST contain a single "*" character. If the the fmt list contains any other value it is ignored.</t>
     <t>The following is an example of an 'm' line for a BFCP connection:</t>
     <figure>
@@ -137,9 +147,8 @@
   <section title="SDP Attributes" anchor="sec:attributes">
   <section title="SDP 'floorctrl' Attribute" anchor="sec:floorctrl-attr">
       <t>
-         This section defines the SDP 'floorctrl' media-level attribute. The attribute is used to determine the floor control role(s) that the endpoints
-         can take for the BFCP-controlled media streams. As described in <xref target="sec:floorctrl-attr"/>, an endpoint can take different roles for different
-         media streams, but for a given media stream an endpoint can only take one role.
+         This section defines the SDP 'floorctrl' media-level attribute. The attribute is used to determine the floor control roles (client and server) for the endpoints associated with
+         the BFCP stream.
       </t>
     <figure>
       <artwork type='abnf'>
@@ -163,13 +172,11 @@
       <t><list style="hanging">
           <t hangText="c-only:">The endpoint is willing to act as floor control client.</t>
           <t hangText="s-only:">The endpoint is willing to act as floor control server only.</t>
-          <t hangText="c-s:">The endpoint is willing to act as floor control client and floor control server.</t>
       </list></t>
       <t>
-        When inserted in an offer, the offerer MAY indicate multiple attribute values. When inserted in an answer, the answerer MUST 
-        indicate only one attribute value. The offerer indicates which floor control role(s) that it is willing to take. The answerer 
-        indicates the role taken by the answerer. Based on this, the floor control role(s) of the offerer is determined,
-        as shown in <xref target="tab-roles"/>.
+        When inserted in an offer, the offerer MAY indicate multiple attribute values ("c-only" and "s-only"). When inserted in an answer, the answerer MUST 
+        indicate only one attribute value: "c-only" or "s-only". The offerer indicates which floor control role(s) that it is willing to take. The answerer 
+        indicates the role taken by the answerer. Based on this, the floor control role of the offerer is determined, as shown in <xref target="tab-roles"/>.
       </t>
       <texttable title="Roles" anchor="tab-roles">
           <ttcol align="center">Offerer</ttcol>
@@ -182,11 +189,22 @@
           <c>c-only</c>
 
           <c>c-s</c>
+          <c>c-only</c>
+          
           <c>c-s</c>
+          <c>s-only</c>
       </texttable> 
       <t>
+        In <xref target="RFC4583"/>, there was a third attribute specified, "c-s", which meant that an endpoint was willing to act as both floor control client and 
+        floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
+        and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
+        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or or answer, 
+        but MUST accept the attribute value in offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As as a result, each endpoint will take the 
+        same role for each BFCP-controlled media stream assocaited with the BFCP stream.
+      </t>
+      <t>
         Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. 
-        If the 'floorctrl' attribute is not present the offerer will act as floor control client, and the answerer will act as floor control server, for each BFCP-controlled media stream.
+        If the 'floorctrl' attribute is not present the offerer will act as floor control client, and the answerer will act as floor control server.
       </t>
       <t>
         The SDP Offer/Answer procedures for the 'floorctrl' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -194,7 +212,7 @@
       <t>The following is an example of a 'floorctrl' attribute in an offer:</t>
       <figure>
         <artwork>
-          a=floorctrl:c-only s-only c-s
+          a=floorctrl:c-only s-only
         </artwork>
       </figure>
   </section>
@@ -282,7 +300,7 @@
     <t><list style="empty">
     <t>
       Note: In <xref target="RFC4583"/> 'm-stream' was erroneously used in <xref target="sec:example"/>. Although the example was non-normative, it is 
-      implemented by some vendors and occurs in cases where the endpoint is willing to act as an server. Therefore, it is RECOMMENDED to support parsing and 
+      implemented by some vendors and occurs in cases where the endpoint is willing to act as a server. Therefore, it is RECOMMENDED to support parsing and 
       interpreting 'm-stream' the same way as 'mstrm' when receiving.
     </t>
     </list></t>
@@ -366,7 +384,7 @@
       the following Section.
     </t>
     <t><list style="empty">
-      <t>Note: When using Interactive Connectivity Establishment (ICE) <xref target="I-D.ietf-ice-rfc5245bis"/>, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
+      <t>Note: When using Interactive Connectivity Establishment (ICE) <xref target="RFC8445"/>, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
       TCP/TLS/BFCP follows the same procedures as TCP/BFCP and is described below.</t>
     </list></t>
     <section title="TCP Connection Management" anchor="sec:tcp-connection">
@@ -413,7 +431,7 @@
       Generic SDP offer/answer procedures for Interactive Connectivity Establishment (ICE) are defined in <xref target="I-D.ietf-mmusic-ice-sip-sdp"/>.
     </t>
     <t>
-      When BFCP is used with UDP based ICE candidates <xref target="I-D.ietf-ice-rfc5245bis"/> then the procedures for UDP/TLS/BFCP are used.
+      When BFCP is used with UDP based ICE candidates <xref target="RFC8445"/> then the procedures for UDP/TLS/BFCP are used.
     </t>
     <t>
       When BFCP is used with TCP based ICE candidates <xref target="RFC6544"/> then the procedures for TCP/DTLS/BFCP are used.
@@ -421,7 +439,7 @@
     <t>
       Based on the procedures defined in <xref target="I-D.ietf-mmusic-dtls-sdp"/>, endpoints treat all ICE candidate pairs associated with a BFCP stream on top of a DTLS association 
       as part of the same DTLS association. Thus, there will only be one BFCP handshake and one DTLS handshake even if there are multiple valid candidate pairs, 
-      and if BFCF media is shifted between candidate pairs (including switching between UDP to TCP candidate pairs) prior to nomination. If new candidates are added, 
+      and if BFCP media is shifted between candidate pairs (including switching between UDP to TCP candidate pairs) prior to nomination. If new candidates are added, 
       they will also be part of the same DTLS association.
     </t>
     <t>
@@ -467,7 +485,7 @@
       the SDP 'connection' attribute according to the procedures in <xref target="RFC4145"/>.
     </t>
     <t><list style="empty">
-      <t>Note: The use of source-specific SDP parameters <xref target="RFC5576"/> is not defined to BFCP streams.</t>
+      <t>Note: The use of source-specific SDP parameters <xref target="RFC5576"/> is not defined for BFCP streams.</t>
     </list></t>
       
     <section title="Generating the Initial SDP Offer" anchor="oa-gen-initial-offer">
@@ -482,21 +500,19 @@
           <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line; and</t>
           <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line; and</t>
           <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line; and</t>
-          <t>MUST associate an SDP 'label' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line of each BFCP-controlled media stream.</t>
+          <t>MUST associate an SDP 'label' attribute (<xref target="RFC4574"/>) with the 'm' line of each BFCP-controlled media stream.</t>
       </list></t>
       <t><list style="empty">
         <t>
           Note: If the offerer includes an SDP 'floorctrl' attribute with a 'c-s' attribute value, or both a 'c-only' and a 's-only' attribute value, in the offer, 
           the attribute values above will only be used if it is determined (<xref target="sec:floorctrl-attr"/>) that the offerer will act as floor control server. 
-          If it is determined that the offerer will act as both floor control server and floor control client, the attribute values will be used for the 
-          BFCP-controlled media streams where the offerer acts as floor control server.
         </t>
       </list></t>
     </section>
 
     <section title="Generating the SDP Answer" anchor="oa-gen-answer">
       <t>
-        When the answerer receives an offer, which contains an 'm' line describing a BFCP stream, the answerer MUST check whether it supports 
+        When the answerer receives an offer that contains an 'm' line describing a BFCP stream, the answerer MUST check whether it supports 
         one or more of the BFCP versions supported by the offerer (<xref target="sec:bfcp-version-attr"/>). If the answerer does not support 
         any of the BFCP versions, it MUST NOT accept the 'm' line. Otherwise, if the answerer accepts the 'm' line, it: 
       </t>
@@ -506,7 +522,7 @@
           <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line.</t>
       </list></t>    
       <t>
-        In addition, if the answerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the answer, the answerer:
+        In addition, if the answerer includes an SDP 'floorctrl' attribute with an 's-only' attribute value in the answer, the answerer:
       </t>
       <t><list style="symbols">          
           <t>MUST associate an SDP 'confid' attribute with the 'm' line; and</t>
@@ -515,10 +531,6 @@
           <t>MUST associate an SDP 'label' attribute with the 'm' line of each BFCP-controlled media stream.</t>
       </list></t>
       <t><list style="empty">
-        <t>
-          Note: If the answerer includes an SDP 'floorctrl' attribute with an 'c-s' attribute value in the answer, the attribute values will be used for 
-          the BFCP-controlled media streams where the answerer acts as floor control server.
-        </t>
         <t>
           Note: An offerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in offers, in which cases
           the default values apply.
@@ -566,7 +578,7 @@
       </t>
       <t><list style="symbols">
           <t>If the BFCP stream is carried on top of TCP, and if the offerer does not want to re-establish an existing TCP connection, the offerer MUST associate 
-             an SDP connection attribute with an 'existing' value, with the 'm' line; and</t>
+             an SDP 'connection' attribute with a value of "existing", with the 'm' line; and</t>
           <t>If the offerer wants to disable a previously established BFCP stream, it MUST assign a zero port value to the 'm' line associated with the 
              BFCP connection, following the procedures in <xref target="RFC3264"/>.</t>
       </list></t>
@@ -759,6 +771,8 @@ m=video 55004 RTP/AVP 31
         <t>BFCP Version Negotiation (<xref target="sec:bfcp-version-attr"/>):<vspace/>
           A new 'bfcpver' SDP media-level attribute is added in order to signal supported version number.</t>
     </list></t>
+    <t>In addition to the changes associated with support BFCP over unreliable transport, the possibility for an endpoint to act as both floor control client and floor control server at the same time has
+    been removed. An endpoint will now take the same role for all BFCP-controlled streams associated with the BFCP stream.</t>
     <t>Clarification and bug fixes:</t>
     <t><list style="numbers">
         <t>Errata ID: 712 (<xref target="sec:server-determination"/> and <xref target="sec:oa-offer-answer-proc"/>):<vspace/>
@@ -791,14 +805,15 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.6544" ?>
     <?rfc include="reference.RFC.4582" ?>
     <?rfc include="reference.RFC.4583" ?>
-    <?rfc include="reference.I-D.draft-ietf-ice-rfc5245bis-20"?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-20"?>
+    <?rfc include="reference.RFC.8174" ?>
+    <?rfc include="reference.RFC.8445" ?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-21"?>
     <?rfc include="reference.I-D.draft-ietf-bfcpbis-rfc4582bis-16" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-dtls-sdp-32" ?>
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-51" ?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-52" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-mux-attributes-17" ?>
   </references>
 </back>
