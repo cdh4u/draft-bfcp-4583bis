@@ -223,7 +223,7 @@
       to convey the conference ID value to the floor control client, using decimal integer representation.
     </t>  
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: confid
 
       Attribute Value: conference-id
@@ -237,9 +237,9 @@
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
       conference-id = 1*DIGIT
-      
-      DIGIT = DIGIT defined in [RFC5234]
-      </artwork>
+       
+      DIGIT = <DIGIT defined in [RFC5234]> 
+      ]]></artwork>
     </figure>
     <t>
       The SDP Offer/Answer procedures for the 'confid' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -252,7 +252,7 @@
       to convey the user ID value to the floor control client, using decimal integer representation.
     </t>  
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: userid
 
       Attribute Value: user-id
@@ -267,8 +267,8 @@
 
       user-id = 1*DIGIT
       
-      DIGIT = DIGIT defined in [RFC5234]
-      </artwork>
+      DIGIT = <DIGIT defined in [RFC5234]>
+      ]]></artwork>
     </figure>
     <t>
       The SDP Offer/Answer procedures for the 'userid' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -281,7 +281,7 @@
       BFCP-controlled media streams.
     </t>      
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: floorid
 
       Attribute Value: floor-id
@@ -296,9 +296,9 @@
 
       floor-id = 1*DIGIT SP "mstrm:" token *(SP token)
 
-      DIGIT = DIGIT defined in [RFC5234]
-      token = token defined in [RFC4566]
-      </artwork>
+      DIGIT = <DIGIT defined in [RFC5234]>
+      token = <token defined in [RFC4566]>
+      ]]></artwork>
     </figure>
     <t>
       The floor identifier value is the integer representation of the Floor ID to be used in BFCP. Each media stream
@@ -324,7 +324,7 @@
       The Augmented BNF syntax <xref target="RFC5234"/> for the attributes is:
     </t> 
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: bfcpver
 
       Attribute Value: bfcp-version
@@ -340,8 +340,8 @@
       bfcp-version = version *(SP version)
       version      = 1*DIGIT
 
-      DIGIT = DIGIT defined in [RFC5234]
-      </artwork>
+      DIGIT = <DIGIT defined in [RFC5234]>
+      ]]></artwork>
     </figure>       
     <t>
       An endpoint uses the 'bfcpver' attribute to convey the version(s) of BFCP supported by the endpoint, using integer values. For a given version, the attribute 
