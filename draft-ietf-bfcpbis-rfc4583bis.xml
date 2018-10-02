@@ -217,13 +217,13 @@
       </figure>
   </section>
 
-  <section title="SDP 'confid' and 'userid' Attributes" anchor="sec:confid-userid-attr">
+  <section title="SDP 'confid' Attributes" anchor="sec:confid-attr">
     <t>
-      This section defines the SDP 'confid' and the 'userid' media-level attributes. The attributes are used by a floor control server 
-      to convey the conference ID value and user ID value to the floor control client, using decimal integer representation.
+      This section defines the SDP 'confid' media-level attribute. The attribute is used by a floor control server 
+      to convey the conference ID value to the floor control client, using decimal integer representation.
     </t>  
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: confid
 
       Attribute Value: conference-id
@@ -237,12 +237,22 @@
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
       conference-id = 1*DIGIT
-      
-      ;DIGIT is defined in [RFC5234] 
-      </artwork>
+       
+      DIGIT = <DIGIT defined in [RFC5234]> 
+      ]]></artwork>
     </figure>
+    <t>
+      The SDP Offer/Answer procedures for the 'confid' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
+    </t>
+  </section>
+
+    <section title="SDP 'userid' Attribute" anchor="sec:userid-attr">
+    <t>
+      This section defines the SDP userid' media-level attribute. The attribute is used by a floor control server 
+      to convey the user ID value to the floor control client, using decimal integer representation.
+    </t>  
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: userid
 
       Attribute Value: user-id
@@ -257,13 +267,13 @@
 
       user-id = 1*DIGIT
       
-      ;DIGIT is defined in [RFC5234] 
-      </artwork>
+      DIGIT = <DIGIT defined in [RFC5234]>
+      ]]></artwork>
     </figure>
     <t>
-      The SDP Offer/Answer procedures for the 'confid' and 'userid' attributes are defined in <xref target="sec:oa-offer-answer-proc"/>.
+      The SDP Offer/Answer procedures for the 'userid' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
     </t>
-   </section>
+  </section>
 
   <section title="SDP 'floorid' Attribute" anchor="sec:floorid-attr">
     <t>
@@ -271,7 +281,7 @@
       BFCP-controlled media streams.
     </t>      
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: floorid
 
       Attribute Value: floor-id
@@ -284,11 +294,11 @@
 
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
-      floor-id = "a=floorid:" 1*DIGIT SP "mstrm:" token *(SP token)
+      floor-id = 1*DIGIT SP "mstrm:" token *(SP token)
 
-      ;DIGIT is defined in [RFC5234]
-      ;token is defined in [RFC4566]
-      </artwork>
+      DIGIT = <DIGIT defined in [RFC5234]>
+      token = <token defined in [RFC4566]>
+      ]]></artwork>
     </figure>
     <t>
       The floor identifier value is the integer representation of the Floor ID to be used in BFCP. Each media stream
@@ -314,7 +324,7 @@
       The Augmented BNF syntax <xref target="RFC5234"/> for the attributes is:
     </t> 
     <figure>
-      <artwork type='abnf'>
+      <artwork type='abnf'><![CDATA[
       Attribute Name: bfcpver
 
       Attribute Value: bfcp-version
@@ -327,11 +337,11 @@
 
     The Augmented BNF syntax [RFC5234] for the attribute is:
 
-      bfcp-version = "a=bfcpver:" version *(SP version)
+      bfcp-version = version *(SP version)
       version      = 1*DIGIT
 
-      ;DIGIT is defined in [RFC5234]
-      </artwork>
+      DIGIT = <DIGIT defined in [RFC5234]>
+      ]]></artwork>
     </figure>       
     <t>
       An endpoint uses the 'bfcpver' attribute to convey the version(s) of BFCP supported by the endpoint, using integer values. For a given version, the attribute 
@@ -497,8 +507,8 @@
         In addition, if the offerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the offer, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line; and</t>
-          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:confid-userid-attr"/>) with the 'm' line; and</t>
+          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-attr"/>) with the 'm' line; and</t>
+          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:userid-attr"/>) with the 'm' line; and</t>
           <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line; and</t>
           <t>MUST associate an SDP 'label' attribute (<xref target="RFC4574"/>) with the 'm' line of each BFCP-controlled media stream.</t>
       </list></t>
@@ -718,7 +728,7 @@ m=video 55004 RTP/AVP 31
     <section title="Registration of the SDP 'confid' Attribute">
       <t>
         This document defines the SDP attribute,'confid'.
-        The details of the attribute are defined in <xref target="sec:confid-userid-attr"/>.
+        The details of the attribute are defined in <xref target="sec:confid-attr"/>.
       </t>
       <t>
         For issues regarding this attribute contact iesg@ietf.org.
@@ -728,7 +738,7 @@ m=video 55004 RTP/AVP 31
     <section title="Registration of the SDP 'userid' Attribute">
       <t>
         This document defines the SDP attribute,'userid'.
-        The details of the attribute are defined in <xref target="sec:confid-userid-attr"/>.
+        The details of the attribute are defined in <xref target="sec:userid-attr"/>.
       </t>
       <t>
         For issues regarding this attribute contact iesg@ietf.org.
