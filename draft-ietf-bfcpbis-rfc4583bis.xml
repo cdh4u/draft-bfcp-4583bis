@@ -4,7 +4,7 @@
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
-<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-25" obsoletes="4583">
+<rfc category="std" ipr="trust200902" docName="draft-ietf-bfcpbis-rfc4583bis-26" obsoletes="4583">
 
 <?rfc strict="yes"?>
 <?rfc toc="yes"?>
@@ -239,6 +239,10 @@
       conference-id = 1*DIGIT
        
       DIGIT = <DIGIT defined in [RFC5234]> 
+
+      The maximum length of the attribute value is determined by the
+      COMMON-HEADER format [I-D.ietf-bfcpbis-rfc4582bis].
+
       ]]></artwork>
     </figure>
     <t>
@@ -268,6 +272,10 @@
       user-id = 1*DIGIT
       
       DIGIT = <DIGIT defined in [RFC5234]>
+
+      The maximum length of the attribute value is determined by the
+      COMMON-HEADER format [I-D.ietf-bfcpbis-rfc4582bis].
+
       ]]></artwork>
     </figure>
     <t>
@@ -298,6 +306,10 @@
 
       DIGIT = <DIGIT defined in [RFC5234]>
       token = <token defined in [RFC4566]>
+
+      The maximum length of the attribute value is determined by the
+      FLOOR-ID format [I-D.ietf-bfcpbis-rfc4582bis].
+
       ]]></artwork>
     </figure>
     <t>
@@ -341,6 +353,10 @@
       version      = 1*DIGIT
 
       DIGIT = <DIGIT defined in [RFC5234]>
+
+      The maximum length of the attribute value is determined by the
+      COMMON-HEADER format [I-D.ietf-bfcpbis-rfc4582bis].
+
       ]]></artwork>
     </figure>       
     <t>
