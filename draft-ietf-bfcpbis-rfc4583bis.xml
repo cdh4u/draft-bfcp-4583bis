@@ -103,8 +103,6 @@
   <section title="Floor Control Roles" anchor="sec:server-determination">
     <t>
        When two endpoints establish a BFCP stream, they need to determine which of them acts as a floor control client and which acts as a floor control server. 
-       Typically, a client that establishes a BFCP stream with a conference server will act as a floor control client, while the conference server will act as 
-       a floor control server.
     </t>
     <t>
        Once the roles have been determined, the roles will apply to all BFCP-controlled streams associated with the BFCP stream.
@@ -135,7 +133,7 @@
           sent and received instead of RTP/RTCP packets using the shim defined in RFC 4571 such that the length field defined in RFC 4571 precedes each DTLS message. This is one of the options when 
           ICE is used (<xref target="sec:ice-considerations"/>). It can also be used without ICE when backward compatibility with RFC 4583 compliant endpoints is not required.</t> 
     </list></t>
-    <t>The fmt (format) list is not applicable to BFCP. The fmt list of 'm' lines in the case of any proto field value related to BFCP MUST contain a single "*" character. If the the fmt list contains any other value it is ignored.</t>
+    <t>The fmt (format) list is not applicable to BFCP. The fmt list of 'm' lines in the case of any proto field value related to BFCP MUST contain a single "*" character. If the the fmt list contains any other value it MUST be ignored.</t>
     <t>The following is an example of an 'm' line for a BFCP connection:</t>
     <figure>
       <artwork>
@@ -387,7 +385,7 @@
     </t>
     <t>
       <xref target="I-D.ietf-mmusic-sdp-mux-attributes"/> defines the mux categories for the SDP 
-      attributes defined in this specification. <xref target="tab:mux-tbd"/> defines the mux category 
+      attributes defined in this specification, except for the 'bfcpver' attribute. <xref target="tab:mux-tbd"/> defines the mux category 
       for the 'bfcpver' attribute:
     </t>
     <texttable title="Multiplexing Attribute Analysis" anchor="tab:mux-tbd">
@@ -495,7 +493,7 @@
     </t>
     <t>
       Within this document, 'initial offer' refers to the first offer, within an SDP session (e.g. a SIP
-      dialog when the Session Initiation Protocol (SIP) <xref target="RFC3261"/> is used to carry SDP), in which the offerer 
+      dialog when the Session Initiation Protocol (SIP) <xref target="RFC3261"/> is used to carry SDP) in which the offerer 
       indicates that it wants to negotiate the establishment of a BFCP stream.
     </t>
     <t>
@@ -530,7 +528,7 @@
       </list></t>
       <t><list style="empty">
         <t>
-          Note: If the offerer includes an SDP 'floorctrl' attribute with a 'c-s' attribute value, or both a 'c-only' and a 's-only' attribute value, in the offer, 
+          Note: If the offerer includes an SDP 'floorctrl' attribute with a 'c-s' attribute value, or both a 'c-only' and a 's-only' attribute value in the offer, 
           the attribute values above will only be used if it is determined (<xref target="sec:floorctrl-attr"/>) that the offerer will act as floor control server. 
         </t>
       </list></t>
@@ -579,7 +577,7 @@
 
     <section title="Offerer Processing of the SDP Answer" anchor="oa-offerer-processing-answer">
       <t>
-        When the offerer receives an answer, which contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
+        When the offerer receives an answer, that contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
       </t>
       <t><list style="symbols">
           <t>MUST, if the offerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
@@ -832,14 +830,14 @@ m=video 55004 RTP/AVP 31
     <?rfc include="reference.RFC.4583" ?>
     <?rfc include="reference.RFC.8174" ?>
     <?rfc include="reference.RFC.8445" ?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-21"?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-ice-sip-sdp-24"?>
     <?rfc include="reference.I-D.draft-ietf-bfcpbis-rfc4582bis-16" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-dtls-sdp-32" ?>
+    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-mux-attributes-17" ?>
   </references>
   <references title="Informational References">
     <?rfc include="reference.RFC.5576" ?>
     <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-bundle-negotiation-53" ?>
-    <?rfc include="reference.I-D.draft-ietf-mmusic-sdp-mux-attributes-17" ?>
   </references>
 </back>
 </rfc>
