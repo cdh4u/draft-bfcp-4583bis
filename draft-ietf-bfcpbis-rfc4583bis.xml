@@ -114,7 +114,7 @@
     <t><list style="hanging">
         <t><![CDATA[m=<media> <port> <proto> <fmt> ...]]></t>
     </list></t>
-    <t>This section describes how to generate an 'm' line for a BFCP stream.</t>
+    <t>This section describes how to generate an 'm' line of an SDP Media Description ('m' section) describing a BFCP stream.</t>
     <t>The media field MUST have a value of "application".</t>
     <t>The port field is set depending on the value of the proto field, as explained below.  A port field value of zero has the standard SDP meaning (i.e., rejection of the media stream) regardless of the proto field.</t>
     <t><list style="hanging">
@@ -174,7 +174,18 @@
       <t>
         When inserted in an offer, the offerer MAY indicate multiple attribute values ("c-only" and "s-only"). When inserted in an answer, the answerer MUST 
         indicate only one attribute value: "c-only" or "s-only". The answerer indicates the role taken by the answerer. The offerer will then take the 
-        opposite role. <xref target="tab-roles"/> shows the roles that the answerer is allowed to take, based on what roles the offerer has 
+        opposite role.
+      </t>
+      <t>
+        In <xref target="RFC4583"/>, there was a third attribute specified, "c-s", which meant that an endpoint was willing to act as both floor control client and 
+        floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
+        and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
+        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or in an answer, 
+        but MUST accept the attribute value in an offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As a result, each endpoint will take the
+        same role for each BFCP-controlled media stream associated with the BFCP stream.
+      </t>
+      <t>
+        <xref target="tab-roles"/> shows the roles that the answerer is allowed to take, based on what roles the offerer has 
         indicated that it is willing to take.
       </t>
       <texttable title="Roles" anchor="tab-roles">
@@ -194,16 +205,9 @@
           <c>s-only</c>
       </texttable> 
       <t>
-        In <xref target="RFC4583"/>, there was a third attribute specified, "c-s", which meant that an endpoint was willing to act as both floor control client and 
-        floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
-        and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
-        (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or in an answer, 
-        but MUST accept the attribute value in an offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As a result, each endpoint will take the
-        same role for each BFCP-controlled media stream associated with the BFCP stream.
-      </t>
-      <t>
         Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. 
-        If the 'floorctrl' attribute is not present, in order to be interoperable with such endpoints, the offerer will act as floor control client, and the answerer will act as floor control server.
+        If the 'floorctrl' attribute is not present, in order to be interoperable with such endpoints, the offerer will act as floor control client
+        and the answerer will act as floor control server.
       </t>
       <t>
         The SDP Offer/Answer procedures for the 'floorctrl' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -216,7 +220,7 @@
       </figure>
   </section>
 
-  <section title="SDP 'confid' Attributes" anchor="sec:confid-attr">
+  <section title="SDP 'confid' Attribute" anchor="sec:confid-attr">
     <t>
       This section defines the SDP 'confid' media-level attribute. The attribute is used by a floor control server 
       to convey the conference ID value to the floor control client, using decimal integer representation.
@@ -372,7 +376,7 @@
       <xref target="I-D.ietf-bfcpbis-rfc4582bis"/>: when used over a reliable transport the default 
       attribute value is "1", and when used over an unreliable transport the default attribute value 
       is "2". The value is inferred from the transport specified in the 'm' line (<xref target="sec:m-line"/>) 
-      associated with the stream. 
+      of the 'm' section associated with the stream. 
     </t>
     <t>
       The SDP Offer/Answer procedures for the 'bfcpver' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -441,7 +445,7 @@
     </t>
     <t>
        When TLS is used with TCP, once the underlying connection is established, the answerer always acts as the TLS server. 
-       If the TCP connection is lost, the active endpoint [<xref target="RFC4583"/>] is responsible for re-establishing the TCP connection. Unless a new 
+       If the TCP connection is lost, the active endpoint <xref target="RFC4583"/> is responsible for re-establishing the TCP connection. Unless a new 
        TLS connection is negotiated, subsequent SDP offers and answers will not impact the previously negotiated TLS roles.
     </t>
     <t><list style="empty">
@@ -490,8 +494,8 @@
       in <xref target="RFC8122"/>.
     </t>
     <t>
-      This section only defines the BFCP-specific procedures. Unless explicitly stated otherwise, the procedures apply to an 'm' line describing a BFCP stream. If an offer or answer contains multiple 'm' lines describing 
-      BFCP streams, the procedures are applied independently to each stream.
+      This section only defines the BFCP-specific procedures. Unless explicitly stated otherwise, the procedures apply to an 'm' section describing a BFCP stream. 
+      If an offer or answer contains multiple 'm' sections describing BFCP streams, the procedures are applied independently to each stream.
     </t>
     <t>
       Within this document, 'initial offer' refers to the first offer, within an SDP session (e.g. a SIP
@@ -516,17 +520,17 @@
       
     <section title="Generating the Initial SDP Offer" anchor="oa-gen-initial-offer">
       <t>
-        When the offerer creates an initial offer, the offerer MUST associate an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) 
-        and an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>) with the 'm' line.
+        When the offerer creates an initial offer, the offerer MUST include an SDP 'floorctrl' attribute (<xref target="sec:floorctrl-attr"/>) 
+        and an SDP 'bfcpver' attribute (<xref target="sec:bfcp-version-attr"/>) in the 'm' section.
       </t>
       <t>
         In addition, if the offerer includes an SDP 'floorctrl' attribute with 's-only' or 'c-s' attribute values in the offer, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST associate an SDP 'confid' attribute (<xref target="sec:confid-attr"/>) with the 'm' line; and</t>
-          <t>MUST associate an SDP 'userid' attribute (<xref target="sec:userid-attr"/>) with the 'm' line; and</t>
-          <t>MUST associate an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) with the 'm' line; and</t>
-          <t>MUST associate an SDP 'label' attribute (<xref target="RFC4574"/>) with the 'm' line of each BFCP-controlled media stream.</t>
+          <t>MUST include an SDP 'confid' attribute (<xref target="sec:confid-attr"/>) in the 'm' section; and</t>
+          <t>MUST include an SDP 'userid' attribute (<xref target="sec:userid-attr"/>) in the 'm' section; and</t>
+          <t>MUST include an SDP 'floorid' attribute (<xref target="sec:floorid-attr"/>) in the 'm' section; and</t>
+          <t>MUST include an SDP 'label' attribute (<xref target="RFC4574"/>) with the 'm' section of each BFCP-controlled media stream.</t>
       </list></t>
       <t><list style="empty">
         <t>
@@ -538,23 +542,23 @@
 
     <section title="Generating the SDP Answer" anchor="oa-gen-answer">
       <t>
-        When the answerer receives an offer that contains an 'm' line describing a BFCP stream, the answerer MUST check whether it supports 
+        When the answerer receives an offer that contains an 'm' section describing a BFCP stream, the answerer MUST check whether it supports 
         one or more of the BFCP versions supported by the offerer (<xref target="sec:bfcp-version-attr"/>). If the answerer does not support 
-        any of the BFCP versions, it MUST NOT accept the 'm' line. Otherwise, if the answerer accepts the 'm' line, it: 
+        any of the BFCP versions, it MUST NOT accept the 'm' section. Otherwise, if the answerer accepts the 'm' section, it: 
       </t>
       <t><list style="symbols">
-          <t>MUST insert a corresponding 'm' line in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
-          <t>MUST associate a 'bfcpver' attribute with the 'm' line. The answerer only indicates support of BFCP versions also supported by the offerer; and</t>
-          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, associate a 'floorctrl' attribute with the 'm' line.</t>
+          <t>MUST insert a corresponding 'm' section in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
+          <t>MUST include a 'bfcpver' attribute in the 'm' section. The versions indicated by the answer MUST be the same or a subset of the versions indicated by the offerer in the corresponding offer.; and</t>
+          <t>MUST, if the offer contained an SDP 'floorctrl' attribute, include a 'floorctrl' attribute in the 'm' section.</t>
       </list></t>    
       <t>
         In addition, if the answerer includes an SDP 'floorctrl' attribute with an 's-only' attribute value in the answer, the answerer:
       </t>
       <t><list style="symbols">          
-          <t>MUST associate an SDP 'confid' attribute with the 'm' line; and</t>
-          <t>MUST associate an SDP 'userid' attribute with the 'm' line; and</t>
-          <t>MUST associate an SDP 'floorid' attribute with the 'm' line; and</t>
-          <t>MUST associate an SDP 'label' attribute with the 'm' line of each BFCP-controlled media stream.</t>
+          <t>MUST include an SDP 'confid' attribute in the 'm' section; and</t>
+          <t>MUST include an SDP 'userid' attribute in the 'm' section; and</t>
+          <t>MUST include an SDP 'floorid' attribute in the 'm' section; and</t>
+          <t>MUST include an SDP 'label' attribute in the 'm' section of each BFCP-controlled media stream.</t>
       </list></t>
       <t><list style="empty">
         <t>
@@ -566,25 +570,25 @@
         Once the answerer has sent the answer, the answerer:
       </t>
       <t><list style="symbols">
-          <t>MUST, if the answerer is the active endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the answerer is the active endpoint, and if a TCP connection associated with the 'm' section is to be established (or re-established), 
              initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the answerer is the active endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the answerer is the active endpoint, and if an TLS/DTLS connection associated with the 'm' section is to be established (or re-established), 
              initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
       <t>
-        If the answerer does not accept the 'm' line in the offer, it MUST assign a zero port value to the corresponding 'm' line in the answer. 
-        In addition, the answerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.
+        If the answerer does not accept the 'm' section in the offer, it MUST assign a zero port value to the 'm' line of the corresponding 'm' section in the answer. 
+        In addition, the answerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' section.
       </t>
     </section>
 
     <section title="Offerer Processing of the SDP Answer" anchor="oa-offerer-processing-answer">
       <t>
-        When the offerer receives an answer, that contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
+        When the offerer receives an answer, that contains an 'm' section with a non-zero port value, describing a BFCP stream, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST, if the offerer is the active endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the offerer is the active endpoint, and if a TCP connection associated with the 'm' section is to be established (or re-established), 
              initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the offerer is the active endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the offerer is the active endpoint, and if an TLS/DTLS connection associated with the 'm' section is to be established (or re-established), 
              initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
       <t>
@@ -593,7 +597,7 @@
       </t>
       <t>
         If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer (e.g., if the answerer only
-        indicates support of BFCP versions not supported by the offerer), the offerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.
+        indicates support of BFCP versions not supported by the offerer), the offerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' section.
       </t>
     </section>
 
@@ -603,8 +607,8 @@
         in <xref target="oa-gen-initial-offer"/>, with the following exceptions:
       </t>
       <t><list style="symbols">
-          <t>If the BFCP stream is carried on top of TCP, and if the offerer does not want to re-establish an existing TCP connection, the offerer MUST associate 
-             an SDP 'connection' attribute with a value of "existing", with the 'm' line; and</t>
+          <t>If the BFCP stream is carried on top of TCP, and if the offerer does not want to re-establish an existing TCP connection, the offerer MUST include 
+             an SDP 'connection' attribute with a value of "existing", in the 'm' section; and</t>
           <t>If the offerer wants to disable a previously established BFCP stream, it MUST assign a zero port value to the 'm' line associated with the 
              BFCP connection, following the procedures in <xref target="RFC3264"/>.</t>
       </list></t>
@@ -613,7 +617,7 @@
   </section>
  
  <section title="Examples" anchor="sec:example">
-    <t>For the purpose of brevity, the main portion of the session description is omitted in the examples, which only show 'm' lines and their attributes.</t>
+    <t>For the purpose of brevity, the main portion of the session description is omitted in the examples, which only show 'm' sections and their 'm' lines and attributes.</t>
     <t>The following is an example of an offer sent by a conference server to a client.</t>
     <figure>
       <artwork>
@@ -700,6 +704,12 @@ m=video 55004 RTP/AVP 31
     and <xref target="RFC8122"/> discuss security issues related to the establishment of TCP and TLS connections using an offer/answer 
     model. Furthermore, when using DTLS over UDP, the generic offer/answer considerations defined in 
     <xref target="I-D.ietf-mmusic-dtls-sdp"/> MUST be followed.</t>
+    <t>The usage of certain proto values in the SDP offer/answer negotiation will result in a BFCP stream that is not protected by 
+    TLS or DTLS. Operators will need to provide integrity protection and confidentiality protection of the BFCP stream using other means.</t>
+    <t>The SDP attributes defined in this specification do not add additional security considerations to the generic security considerations 
+    for protecting SDP attributes <xref target="RFC3264"/>. The attributes do not reveal information about the content of individual BFCP 
+    controlled media streams, nor do they reveal which media streams will be BFCP controlled.</t>
+
   </section>
 
   <section title="IANA Considerations" anchor="sec:iana">
@@ -708,7 +718,7 @@ m=video 55004 RTP/AVP 31
     </list></t>
 
     <section title="Registration of SDP 'proto' Values" anchor="sec:proto-reg">
-      <t>The IANA has registered the following values for the SDP 'proto' field under the Session Description Protocol (SDP) Parameters registry:</t>
+      <t>The IANA is requested to register the following values for the SDP 'proto' field under the Session Description Protocol (SDP) Parameters registry:</t>
 
       <texttable title="Values for the SDP 'proto' field" anchor="tab:proto-iana">
         <ttcol>Value</ttcol>
@@ -736,18 +746,12 @@ m=video 55004 RTP/AVP 31
         This document defines the SDP attribute,'floorctrl'.
         The details of the attribute are defined in <xref target="sec:floorctrl-attr"/>.
       </t>
-      <t>
-        For issues regarding this attribute contact iesg@ietf.org.
-      </t>
     </section>
 
     <section title="Registration of the SDP 'confid' Attribute">
       <t>
         This document defines the SDP attribute,'confid'.
         The details of the attribute are defined in <xref target="sec:confid-attr"/>.
-      </t>
-      <t>
-        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
 
@@ -756,9 +760,6 @@ m=video 55004 RTP/AVP 31
         This document defines the SDP attribute,'userid'.
         The details of the attribute are defined in <xref target="sec:userid-attr"/>.
       </t>
-      <t>
-        For issues regarding this attribute contact iesg@ietf.org.
-      </t>
     </section>
 
     <section title="Registration of the SDP 'floorid' Attribute">
@@ -766,18 +767,12 @@ m=video 55004 RTP/AVP 31
         This document defines the SDP attribute,'floorid'.
         The details of the attribute are defined in <xref target="sec:floorid-attr"/>.
       </t>
-      <t>
-        For issues regarding this attribute contact iesg@ietf.org.
-      </t>
     </section>
  
     <section title="Registration of the SDP 'bfcpver' Attribute">
       <t>
         This document defines the SDP attribute,'bfcpver'.
         The details of the attribute are defined in <xref target="sec:bfcp-version-attr"/>.
-      </t>
-      <t>
-        For issues regarding this attribute contact iesg@ietf.org.
       </t>
     </section>
   </section>
