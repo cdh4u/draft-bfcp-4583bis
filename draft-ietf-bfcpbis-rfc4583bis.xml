@@ -110,11 +110,11 @@
   </section>
 
   <section title="Fields in the 'm' Line" anchor="sec:m-line">
-    <t>This section describes how to generate an 'm' line for a BFCP stream.</t>
     <t>According to the SDP specification <xref target="RFC4566"/>, the 'm' line format is the following:</t>
     <t><list style="hanging">
         <t><![CDATA[m=<media> <port> <proto> <fmt> ...]]></t>
     </list></t>
+    <t>This section describes how to generate an 'm' line for a BFCP stream.</t>
     <t>The media field MUST have a value of "application".</t>
     <t>The port field is set depending on the value of the proto field, as explained below.  A port field value of zero has the standard SDP meaning (i.e., rejection of the media stream) regardless of the proto field.</t>
     <t><list style="hanging">
@@ -173,8 +173,9 @@
       </list></t>
       <t>
         When inserted in an offer, the offerer MAY indicate multiple attribute values ("c-only" and "s-only"). When inserted in an answer, the answerer MUST 
-        indicate only one attribute value: "c-only" or "s-only". The offerer indicates which floor control role(s) that it is willing to take. The answerer 
-        indicates the role taken by the answerer. Based on this, the floor control role of the offerer is determined, as shown in <xref target="tab-roles"/>.
+        indicate only one attribute value: "c-only" or "s-only". The answerer indicates the role taken by the answerer. The offerer will then take the 
+        opposite role. <xref target="tab-roles"/> shows the roles that the answerer is allowed to take, based on what roles the offerer has 
+        indicated that it is willing to take.
       </t>
       <texttable title="Roles" anchor="tab-roles">
           <ttcol align="center">Offerer</ttcol>
@@ -202,7 +203,7 @@
       </t>
       <t>
         Endpoints compliant with <xref target="RFC4583"/> might not include the 'floorctrl' attribute in offers and answerer. 
-        If the 'floorctrl' attribute is not present the offerer will act as floor control client, and the answerer will act as floor control server.
+        If the 'floorctrl' attribute is not present, in order to be interoperable with such endpoints, the offerer will act as floor control client, and the answerer will act as floor control server.
       </t>
       <t>
         The SDP Offer/Answer procedures for the 'floorctrl' attribute are defined in <xref target="sec:oa-offer-answer-proc"/>.
@@ -283,8 +284,8 @@
 
   <section title="SDP 'floorid' Attribute" anchor="sec:floorid-attr">
     <t>
-      This section defines the SDP 'floorid' media-level attribute. The attribute conveys a floor identifier, and optionally pointers to one or more
-      BFCP-controlled media streams.
+      This section defines the SDP 'floorid' media-level attribute. The attribute conveys a floor identifier, using decimal integer
+      representation, and optionally pointers to one or more BFCP-controlled media streams.
     </t>      
     <figure>
       <artwork type='abnf'><![CDATA[
@@ -328,7 +329,8 @@
 
   <section title="SDP 'bfcpver' Attribute" anchor="sec:bfcp-version-attr">
     <t>
-      This section defines the SDP 'bfcpver' media-level attribute. The attribute is used to negotiate the BFCP version.
+      This section defines the SDP 'bfcpver' media-level attribute. The attribute is used to negotiate the 
+      BFCP version, using decimal integer representation.
     </t>
     <t>
       The Augmented BNF syntax <xref target="RFC5234"/> for the attributes is:
@@ -408,7 +410,7 @@
       the following Section.
     </t>
     <t><list style="empty">
-      <t>Note: When using Interactive Connectivity Establishment (ICE) <xref target="RFC8445"/>, TCP/DTLS/BFCP, and UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
+      <t>Note: When using Interactive Connectivity Establishment (ICE) <xref target="RFC8445"/>, TCP/DTLS/BFCP, or UDP/TLS/BFCP, the straight-forward procedures for connection management as UDP/BFCP described above apply. 
       TCP/TLS/BFCP follows the same procedures as TCP/BFCP and is described below.</t>
     </list></t>
     <section title="TCP Connection Management" anchor="sec:tcp-connection">
@@ -439,8 +441,8 @@
     </t>
     <t>
        When TLS is used with TCP, once the underlying connection is established, the answerer always acts as the TLS server. 
-       If the TCP connection is lost, the active endpoint is responsible for re-establishing the TCP connection. Unless a new 
-       TLS session is negotiated, subsequent SDP offers and answers will not impact the previously negotiated TLS roles.
+       If the TCP connection is lost, the active endpoint [<xref target="RFC4583"/>] is responsible for re-establishing the TCP connection. Unless a new 
+       TLS connection is negotiated, subsequent SDP offers and answers will not impact the previously negotiated TLS roles.
     </t>
     <t><list style="empty">
         <t>
@@ -564,9 +566,9 @@
         Once the answerer has sent the answer, the answerer:
       </t>
       <t><list style="symbols">
-          <t>MUST, if the answerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the answerer is the active endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
              initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the answerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the answerer is the active endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
              initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
       <t>
@@ -580,15 +582,15 @@
         When the offerer receives an answer, that contains an 'm' line with a non-zero port value, describing a BFCP stream, the offerer:
       </t>
       <t><list style="symbols">
-          <t>MUST, if the offerer is the 'active' endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the offerer is the active endpoint, and if a TCP connection associated with the 'm' line is to be established (or re-established), 
              initiate the establishing of the TCP connection; and</t>
-          <t>MUST, if the offerer is the 'active' endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
+          <t>MUST, if the offerer is the active endpoint, and if an TLS/DTLS connection associated with the 'm' line is to be established (or re-established), 
              initiate the establishing of the TLS/DTLS connection (by sending a ClientHello message).</t>
       </list></t>
-      <t><list style="empty">
-        <t>Note: An answerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in answers, in which cases
-        the default values apply.</t>
-      </list></t>
+      <t>
+        Note: An answerer compliant with <xref target="RFC4583"/> might not include 'floorctrl' and 'bfcpver' attributes in answers, 
+        in which cases the default values apply.
+      </t>
       <t>
         If the 'm' line in the answer contains a zero port value, or if the offerer for some other reason does not accept the answer (e.g., if the answerer only
         indicates support of BFCP versions not supported by the offerer), the offerer MUST NOT establish a TCP connection or a TLS/DTLS connection associated with the 'm' line.
@@ -786,8 +788,6 @@ m=video 55004 RTP/AVP 31
     <t><list style="numbers">
         <t>Fields in the 'm' line (<xref target="sec:m-line"/>):<vspace/>
           The section is re-written to remove reference to the exclusivity of TCP as a transport for BFCP streams. The proto field values TCP/DTLS/BFCP, UDP/BFCP and UDP/TLS/BFCP added.</t>
-        <t>Authentication (<xref target="sec:authentication"/>):<vspace/>
-          In last paragraph, made clear that a TCP connection was described.</t>
         <t>Security Considerations (<xref target="sec:security"/>):<vspace/>
           For the DTLS over UDP case, mention existing considerations and requirements for the offer/answer exchange in <xref target="I-D.ietf-mmusic-dtls-sdp"/>.</t>
         <t>Registration of SDP 'proto' Values (<xref target="sec:proto-reg"/>):<vspace/>
