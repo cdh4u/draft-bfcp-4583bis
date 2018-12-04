@@ -243,7 +243,7 @@
        
       DIGIT = <DIGIT defined in [RFC5234]> 
 
-      The maximum length of the attribute value is determined by the
+      The maximum value of the attribute is determined by the
       COMMON-HEADER format [I-D.ietf-bfcpbis-rfc4582bis].
 
       ]]></artwork>
@@ -276,7 +276,7 @@
       
       DIGIT = <DIGIT defined in [RFC5234]>
 
-      The maximum length of the attribute value is determined by the
+      The maximum value of the attribute is determined by the
       COMMON-HEADER format [I-D.ietf-bfcpbis-rfc4582bis].
 
       ]]></artwork>
@@ -310,7 +310,7 @@
       DIGIT = <DIGIT defined in [RFC5234]>
       token = <token defined in [RFC4566]>
 
-      The maximum length of the attribute value is determined by the
+      The maximum value of the attribute is determined by the
       FLOOR-ID format [I-D.ietf-bfcpbis-rfc4582bis].
 
       ]]></artwork>
@@ -358,7 +358,7 @@
 
       DIGIT = <DIGIT defined in [RFC5234]>
 
-      The maximum length of the attribute value is determined by the
+      The maximum value of the attribute is determined by the
       COMMON-HEADER format [I-D.ietf-bfcpbis-rfc4582bis].
 
       ]]></artwork>
