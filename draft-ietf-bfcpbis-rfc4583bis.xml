@@ -706,9 +706,9 @@ m=video 55004 RTP/AVP 31
     <xref target="I-D.ietf-mmusic-dtls-sdp"/> MUST be followed.</t>
     <t>The usage of certain proto values in the SDP offer/answer negotiation will result in a BFCP stream that is not protected by 
     TLS or DTLS. Operators will need to provide integrity protection and confidentiality protection of the BFCP stream using other means.</t>
-    <t>The SDP attributes defined in this specification do not add additional security considerations to the generic security considerations 
-    for protecting SDP attributes <xref target="RFC3264"/>. The attributes do not reveal information about the content of individual BFCP 
-    controlled media streams, nor do they reveal which media streams will be BFCP controlled.</t>
+    <t>The generic security considerations associated with SDP attributes are defined in <xref target="RFC3264"/>. While the attributes
+    defined in this specification do not reveal information about the content of individual BFCP controlled media streams, they do reveal 
+    which media streams will be BFCP controlled.</t>
 
   </section>
 
