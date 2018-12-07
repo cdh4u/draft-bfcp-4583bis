@@ -181,8 +181,9 @@
         floor control server at the same time for the BFCP stream, taking different roles for different BFCP-controlled media streams. The feature was underspecified 
         and implemented in different ways, in particular many implementations interpreted "c-s” to mean that the endpoint is willing to act as either client or server 
         (equivalent to “c-only s-only”). An implementation compliant to this specification MUST NOT include the "c-s" floorctl attribute value in an offer or in an answer, 
-        but MUST accept the attribute value in an offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). As a result, each endpoint will take the
-        same role for each BFCP-controlled media stream associated with the BFCP stream.
+        but MUST accept the attribute value in an offer and process it as equivalent to "c-only s-only" (or "s-only c-only"). Also, as an implementation compliant to 
+        this specification is only allowed to include one role, either 'c-only' or 's-conly', in an answer, each endpoint will only take one role, and as a result 
+        the endpoint will take the same role for each BFCP-controlled media stream associated with the BFCP stream.
       </t>
       <t>
         <xref target="tab-roles"/> shows the roles that the answerer is allowed to take, based on what roles the offerer has 
@@ -548,7 +549,7 @@
       </t>
       <t><list style="symbols">
           <t>MUST insert a corresponding 'm' section in the answer, with an identical 'm' line proto value <xref target="RFC3264"/>; and</t>
-          <t>MUST include a 'bfcpver' attribute in the 'm' section. The versions indicated by the answer MUST be the same or a subset of the versions indicated by the offerer in the corresponding offer.; and</t>
+          <t>MUST include a 'bfcpver' attribute in the 'm' section. The versions indicated by the answer MUST be the same or a subset of the versions indicated by the offerer in the corresponding offer; and</t>
           <t>MUST, if the offer contained an SDP 'floorctrl' attribute, include a 'floorctrl' attribute in the 'm' section.</t>
       </list></t>    
       <t>
@@ -583,7 +584,7 @@
 
     <section title="Offerer Processing of the SDP Answer" anchor="oa-offerer-processing-answer">
       <t>
-        When the offerer receives an answer, that contains an 'm' section with a non-zero port value, describing a BFCP stream, the offerer:
+        When the offerer receives an answer that contains an 'm' section with a non-zero port value, describing a BFCP stream, the offerer:
       </t>
       <t><list style="symbols">
           <t>MUST, if the offerer is the active endpoint, and if a TCP connection associated with the 'm' section is to be established (or re-established), 
